@@ -3,51 +3,86 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>App Mentoría Trading</title>
+    <title>Presupuesto Hogar</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .contenedor-app { max-width: 450px; margin: 0 auto; min-height: 100vh; background: #f8fafc; }
+        .pantalla { display: none; }
+        .pantalla.activa { display: block; }
+        .boton-accion:active { transform: scale(0.95); transition: 0.1s; }
+    </style>
 </head>
-<body class="bg-slate-900 text-slate-800">
-    <div style="max-width: 450px;" class="mx-auto min-h-screen bg-white shadow-2xl p-6">
-        
-        <header class="text-center mb-8">
-            <h1 class="text-2xl font-black text-blue-900">MENTORÍA TRADING</h1>
-            <p class="text-slate-500 text-xs uppercase tracking-widest">Gestión Jhon Jairo</p>
+<body class="bg-slate-200">
+    <div class="contenedor-app p-4 shadow-2xl flex flex-col">
+        <header class="text-center py-6">
+            <h1 class="text-2xl font-black text-slate-800 uppercase tracking-tighter">Presupuesto Hogar</h1>
+            <p class="text-slate-500 text-xs font-bold uppercase tracking-widest">Control de Gastos e Ingresos</p>
         </header>
 
-        <div id="seccion-login" class="block">
-            <div class="bg-slate-50 p-6 rounded-3xl border shadow-inner">
-                <input type="password" id="pass" placeholder="Contraseña de acceso" class="w-full p-4 rounded-2xl mb-4 border-2 outline-none focus:border-blue-500">
-                <button onclick="entrar()" class="w-full bg-blue-900 text-white p-4 rounded-2xl font-bold shadow-lg">INGRESAR AHORA</button>
+        <div id="pantalla-login" class="pantalla activa space-y-4">
+            <div class="bg-white p-8 rounded-[2rem] shadow-lg border text-center">
+                <input type="password" id="pass-acceso" placeholder="Contraseña de acceso" class="w-full p-4 rounded-2xl mb-4 border-2 outline-none focus:border-blue-600 text-center">
+                <button onclick="entrarApp()" class="w-full bg-slate-800 text-white p-4 rounded-2xl font-bold shadow-lg boton-accion">ENTRAR</button>
             </div>
         </div>
 
-        <div id="seccion-menu" class="hidden space-y-4">
+        <div id="pantalla-menu" class="pantalla space-y-4">
+            <div class="bg-slate-800 text-white p-8 rounded-[2rem] shadow-xl mb-6 text-center border-b-4 border-blue-500">
+                <p class="text-xs opacity-70 uppercase font-bold mb-1 text-blue-300">Saldo Disponible</p>
+                <h2 id="saldo-total" class="text-4xl font-black">$ 0.00</h2>
+            </div>
             <div class="grid grid-cols-2 gap-4">
-                <button onclick="mostrarAlerta('Ingresos')" class="bg-emerald-500 text-white p-6 rounded-3xl shadow-lg font-bold">💰 INGRESOS</button>
-                <button onclick="mostrarAlerta('Gastos')" class="bg-rose-500 text-white p-6 rounded-3xl shadow-lg font-bold">💸 GASTOS</button>
-                <button onclick="mostrarAlerta('Listado')" class="bg-blue-600 text-white p-6 rounded-3xl shadow-lg font-bold col-span-2 text-xl">📊 VER LISTADOS</button>
-                <button onclick="mostrarAlerta('Proyección')" class="bg-indigo-700 text-white p-6 rounded-3xl shadow-lg font-bold col-span-2">🚀 PROYECCIÓN 3 MESES</button>
+                <button onclick="irA('pantalla-ingresos')" class="boton-accion bg-emerald-500 text-white p-6 rounded-[2rem] shadow-lg font-bold">💰 Ingresos</button>
+                <button onclick="irA('pantalla-gastos')" class="boton-accion bg-rose-500 text-white p-6 rounded-[2rem] shadow-lg font-bold">💸 Gastos</button>
+                <button onclick="irA('pantalla-listado')" class="boton-accion bg-blue-600 text-white p-6 rounded-[2rem] shadow-lg font-bold col-span-2">📊 Historial de Gastos</button>
             </div>
-            <button onclick="location.reload()" class="w-full text-slate-400 text-sm mt-8">Cerrar Sesión</button>
         </div>
 
+        <div id="pantalla-ingresos" class="pantalla space-y-4">
+            <h2 class="text-xl font-bold text-emerald-600 text-center">Nuevo Ingreso</h2>
+            <input type="number" id="monto-in" placeholder="Monto $" class="w-full p-5 rounded-2xl border-2 outline-none focus:border-emerald-500 text-xl font-bold">
+            <input type="text" id="desc-in" placeholder="Nota (Ej: Salario, Venta)" class="w-full p-4 rounded-2xl border-2 outline-none focus:border-emerald-500">
+            <button onclick="guardarDato('in')" class="w-full bg-emerald-600 text-white p-5 rounded-2xl font-bold text-xl shadow-lg boton-accion">GUARDAR</button>
+            <button onclick="irA('pantalla-menu')" class="w-full text-slate-400">Cancelar</button>
+        </div>
+
+        <div id="pantalla-gastos" class="pantalla space-y-4">
+            <h2 class="text-xl font-bold text-rose-600 text-center">Nuevo Gasto</h2>
+            <select id="tipo-gas" class="w-full p-5 rounded-2xl border-2 bg-white font-bold">
+                <option value="Básico">Gasto Básico</option>
+                <option value="Secundario">Gasto Secundario</option>
+                <option value="Superfluo">Gasto Superfluo</option>
+            </select>
+            <input type="number" id="monto-gas" placeholder="Monto $" class="w-full p-5 rounded-2xl border-2 outline-none focus:border-rose-500 text-xl font-bold">
+            <button onclick="guardarDato('gas')" class="w-full bg-rose-600 text-white p-5 rounded-2xl font-bold text-xl shadow-lg boton-accion">REGISTRAR</button>
+            <button onclick="irA('pantalla-menu')" class="w-full text-slate-400">Cancelar</button>
+        </div>
     </div>
 
     <script>
-        // Función de entrada directa
-        function entrar() {
-            const clave = document.getElementById('pass').value;
-            if(clave !== "") {
-                document.getElementById('seccion-login').style.display = 'none';
-                document.getElementById('seccion-menu').style.display = 'block';
-            } else {
-                alert("Escribe cualquier contraseña para probar");
-            }
+        let saldo = parseFloat(localStorage.getItem('saldo_hogar')) || 0;
+        document.getElementById('saldo-total').innerText = `$ ${saldo.toLocaleString()}`;
+
+        function irA(id) {
+            document.querySelectorAll('.pantalla').forEach(p => p.classList.remove('activa'));
+            document.getElementById(id).classList.add('activa');
         }
 
-        // Función para probar botones
-        function mostrarAlerta(nombre) {
-            alert("Has tocado el botón: " + nombre + ". La lógica está activa.");
+        function entrarApp() {
+            if(document.getElementById('pass-acceso').value !== "") irA('pantalla-menu');
+        }
+
+        function guardarDato(tipo) {
+            if(tipo === 'in') {
+                saldo += parseFloat(document.getElementById('monto-in').value) || 0;
+                document.getElementById('monto-in').value = "";
+            } else {
+                saldo -= parseFloat(document.getElementById('monto-gas').value) || 0;
+                document.getElementById('monto-gas').value = "";
+            }
+            localStorage.setItem('saldo_hogar', saldo);
+            document.getElementById('saldo-total').innerText = `$ ${saldo.toLocaleString()}`;
+            irA('pantalla-menu'); 
         }
     </script>
 </body>
