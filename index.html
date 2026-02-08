@@ -3,51 +3,69 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>App Presupuesto Mentoría</title>
+    <title>App Finanzas Jhon Jairo</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* Esto hace que en PC se vea como una App centrada y no estirada */
-        .contenedor-app {
-            max-width: 450px;
-            margin: 0 auto;
-            min-height: 100vh;
-            background: white;
-            box-shadow: 0 0 50px rgba(0,0,0,0.1);
-        }
+        .contenedor-app { max-width: 450px; margin: 0 auto; min-height: 100vh; background: white; box-shadow: 0 0 50px rgba(0,0,0,0.1); }
+        .boton-accion { transition: all 0.2s; }
+        .boton-accion:active { transform: scale(0.95); }
     </style>
 </head>
-<body class="bg-slate-200">
-    <div class="contenedor-app p-6">
+<body class="bg-slate-800">
+    <div class="contenedor-app p-6 flex flex-col">
         <header class="text-center mb-8">
-            <h1 class="text-3xl font-black text-blue-900">PRESUPUESTO</h1>
-            <p class="text-slate-500 font-bold">Trading & Hogar</p>
+            <h1 class="text-3xl font-black text-blue-900">MENTORÍA TRADING</h1>
+            <p class="text-slate-500 font-bold uppercase text-xs tracking-widest">Gestión de Capital</p>
         </header>
 
-        <div id="seccion-login" class="space-y-4">
-            <div class="bg-blue-50 p-6 rounded-3xl border-2 border-blue-100">
-                <input type="text" id="usuario" placeholder="Usuario" class="w-full p-4 rounded-2xl mb-3 border-none shadow-sm">
-                <input type="password" id="pass" placeholder="Contraseña" class="w-full p-4 rounded-2xl mb-4 border-none shadow-sm">
-                <button onclick="iniciarApp()" class="w-full bg-blue-900 text-white p-4 rounded-2xl font-bold text-lg shadow-lg active:scale-95 transition">INGRESAR</button>
+        <div id="pantalla-login" class="space-y-4">
+            <div class="bg-slate-50 p-6 rounded-3xl border-2 border-slate-100 shadow-inner">
+                <input type="text" id="user" placeholder="Usuario" class="w-full p-4 rounded-2xl mb-3 border-2 border-slate-200 outline-none focus:border-blue-500">
+                <input type="password" id="pass" placeholder="Contraseña" class="w-full p-4 rounded-2xl mb-4 border-2 border-slate-200 outline-none focus:border-blue-500">
+                <button onclick="loguear()" class="w-full bg-blue-900 text-white p-4 rounded-2xl font-bold text-lg shadow-lg hover:bg-blue-800 boton-accion">ENTRAR A MI APP</button>
             </div>
         </div>
 
-        <div id="seccion-app" class="hidden">
+        <div id="pantalla-menu" class="hidden space-y-4">
+            <div class="bg-blue-900 text-white p-6 rounded-3xl shadow-xl mb-6">
+                <p class="text-sm opacity-80">Saldo Disponible</p>
+                <h2 id="display-saldo" class="text-3xl font-bold">$ 0.00</h2>
+            </div>
+
             <div class="grid grid-cols-2 gap-4">
-                <button class="bg-emerald-500 text-white p-6 rounded-3xl shadow-md font-bold">INGRESOS</button>
-                <button class="bg-rose-500 text-white p-6 rounded-3xl shadow-md font-bold">GASTOS</button>
-                <button class="bg-blue-600 text-white p-6 rounded-3xl shadow-md font-bold col-span-2">PROYECCIÓN 3 MESES</button>
+                <button onclick="alert('Módulo de Ingresos Próximamente')" class="bg-emerald-500 text-white p-6 rounded-3xl shadow-md font-bold boton-accion text-center">
+                    <span class="block text-2xl mb-1">💰</span>INGRESOS
+                </button>
+                <button onclick="alert('Módulo de Gastos Próximamente')" class="bg-rose-500 text-white p-6 rounded-3xl shadow-md font-bold boton-accion text-center">
+                    <span class="block text-2xl mb-1">💸</span>GASTOS
+                </button>
+                <button onclick="alert('Proyección a 3 meses: Activándose')" class="bg-indigo-600 text-white p-6 rounded-3xl shadow-md font-bold boton-accion text-center col-span-2">
+                    <span class="block text-2xl mb-1">🚀</span>PROYECCIÓN 3 MESES
+                </button>
             </div>
-            
-            <div class="mt-8 p-4 bg-slate-50 rounded-2xl border-dashed border-2 border-slate-300">
-                <p class="text-center text-slate-400 text-sm italic">"Los datos guardados en este dispositivo son privados."</p>
-            </div>
+
+            <button onclick="cerrarSesion()" class="w-full mt-10 text-slate-400 font-bold text-sm underline">CERRAR SESIÓN</button>
         </div>
     </div>
 
     <script>
-        function iniciarApp() {
-            document.getElementById('seccion-login').classList.add('hidden');
-            document.getElementById('seccion-app').classList.remove('hidden');
+        // Función para entrar
+        function loguear() {
+            const usuario = document.getElementById('user').value;
+            const clave = document.getElementById('pass').value;
+
+            // Por ahora dejamos entrar con cualquier cosa para probar
+            if(usuario !== "" && clave !== "") {
+                document.getElementById('pantalla-login').classList.add('hidden');
+                document.getElementById('pantalla-menu').classList.remove('hidden');
+            } else {
+                alert("Por favor ingresa usuario y contraseña");
+            }
+        }
+
+        function cerrarSesion() {
+            document.getElementById('pantalla-login').classList.remove('hidden');
+            document.getElementById('pantalla-menu').classList.add('hidden');
         }
     </script>
 </body>
