@@ -3,69 +3,69 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>App Finanzas Jhon Jairo</title>
+    <title>App Mentoría Trading</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        .contenedor-app { max-width: 450px; margin: 0 auto; min-height: 100vh; background: white; box-shadow: 0 0 50px rgba(0,0,0,0.1); }
-        .boton-accion { transition: all 0.2s; }
-        .boton-accion:active { transform: scale(0.95); }
+        .contenedor-app { max-width: 450px; margin: 0 auto; min-height: 100vh; background: #f8fafc; }
+        .pantalla { display: none; }
+        .pantalla.activa { display: block; }
     </style>
 </head>
-<body class="bg-slate-800">
-    <div class="contenedor-app p-6 flex flex-col">
-        <header class="text-center mb-8">
-            <h1 class="text-3xl font-black text-blue-900">MENTORÍA TRADING</h1>
-            <p class="text-slate-500 font-bold uppercase text-xs tracking-widest">Gestión de Capital</p>
+<body>
+    <div class="contenedor-app p-4 shadow-2xl">
+        <header class="text-center py-6">
+            <h1 class="text-2xl font-black text-blue-900">MENTORÍA TRADING</h1>
+            <p class="text-slate-500 text-sm">Control de Presupuesto Real</p>
         </header>
 
-        <div id="pantalla-login" class="space-y-4">
-            <div class="bg-slate-50 p-6 rounded-3xl border-2 border-slate-100 shadow-inner">
-                <input type="text" id="user" placeholder="Usuario" class="w-full p-4 rounded-2xl mb-3 border-2 border-slate-200 outline-none focus:border-blue-500">
-                <input type="password" id="pass" placeholder="Contraseña" class="w-full p-4 rounded-2xl mb-4 border-2 border-slate-200 outline-none focus:border-blue-500">
-                <button onclick="loguear()" class="w-full bg-blue-900 text-white p-4 rounded-2xl font-bold text-lg shadow-lg hover:bg-blue-800 boton-accion">ENTRAR A MI APP</button>
+        <div id="menu" class="pantalla activa space-y-4">
+            <div class="grid grid-cols-2 gap-4">
+                <button onclick="irA('pantalla-ingresos')" class="bg-emerald-500 text-white p-6 rounded-3xl shadow-lg font-bold">
+                    <span class="block text-2xl">💰</span> Ingresos
+                </button>
+                <button onclick="irA('pantalla-gastos')" class="bg-rose-500 text-white p-6 rounded-3xl shadow-lg font-bold">
+                    <span class="block text-2xl">💸</span> Gastos
+                </button>
+                <button onclick="irA('pantalla-listado')" class="bg-blue-600 text-white p-6 rounded-3xl shadow-lg font-bold">
+                    <span class="block text-2xl">📊</span> Listado
+                </button>
+                <button onclick="irA('pantalla-proyeccion')" class="bg-indigo-700 text-white p-6 rounded-3xl shadow-lg font-bold">
+                    <span class="block text-2xl">🚀</span> Proyección
+                </button>
+            </div>
+            <div class="bg-white p-6 rounded-3xl shadow-sm border mt-6 text-center">
+                <p class="text-slate-600">Bienvenido, <strong>Jhon Jairo</strong></p>
+                <p class="text-xs text-slate-400 mt-2 italic">"La disciplina financiera es la base del éxito"</p>
             </div>
         </div>
 
-        <div id="pantalla-menu" class="hidden space-y-4">
-            <div class="bg-blue-900 text-white p-6 rounded-3xl shadow-xl mb-6">
-                <p class="text-sm opacity-80">Saldo Disponible</p>
-                <h2 id="display-saldo" class="text-3xl font-bold">$ 0.00</h2>
-            </div>
+        <div id="pantalla-ingresos" class="pantalla space-y-4">
+            <h2 class="text-xl font-bold text-emerald-600">Nuevo Ingreso</h2>
+            <input type="number" id="monto-ingreso" placeholder="Monto $" class="w-full p-4 rounded-2xl border">
+            <input type="text" id="desc-ingreso" placeholder="Descripción (max 50 carac.)" maxlength="50" class="w-full p-4 rounded-2xl border">
+            <button onclick="alert('Ingreso Guardado'); irA('menu')" class="w-full bg-emerald-500 text-white p-4 rounded-2xl font-bold">GUARDAR</button>
+            <button onclick="irA('menu')" class="w-full text-slate-400">Volver al menú</button>
+        </div>
 
-            <div class="grid grid-cols-2 gap-4">
-                <button onclick="alert('Módulo de Ingresos Próximamente')" class="bg-emerald-500 text-white p-6 rounded-3xl shadow-md font-bold boton-accion text-center">
-                    <span class="block text-2xl mb-1">💰</span>INGRESOS
-                </button>
-                <button onclick="alert('Módulo de Gastos Próximamente')" class="bg-rose-500 text-white p-6 rounded-3xl shadow-md font-bold boton-accion text-center">
-                    <span class="block text-2xl mb-1">💸</span>GASTOS
-                </button>
-                <button onclick="alert('Proyección a 3 meses: Activándose')" class="bg-indigo-600 text-white p-6 rounded-3xl shadow-md font-bold boton-accion text-center col-span-2">
-                    <span class="block text-2xl mb-1">🚀</span>PROYECCIÓN 3 MESES
-                </button>
-            </div>
-
-            <button onclick="cerrarSesion()" class="w-full mt-10 text-slate-400 font-bold text-sm underline">CERRAR SESIÓN</button>
+        <div id="pantalla-gastos" class="pantalla space-y-4">
+            <h2 class="text-xl font-bold text-rose-600">Nuevo Gasto</h2>
+            <select id="tipo-gasto" class="w-full p-4 rounded-2xl border bg-white">
+                <option value="basico">Básico</option>
+                <option value="secundario">Secundario</option>
+                <option value="superfluo">Superfluo</option>
+            </select>
+            <input type="number" id="monto-gasto" placeholder="Monto $" class="w-full p-4 rounded-2xl border">
+            <button onclick="alert('Gasto Guardado'); irA('menu')" class="w-full bg-rose-500 text-white p-4 rounded-2xl font-bold">REGISTRAR GASTO</button>
+            <button onclick="irA('menu')" class="w-full text-slate-400">Volver al menú</button>
         </div>
     </div>
 
     <script>
-        // Función para entrar
-        function loguear() {
-            const usuario = document.getElementById('user').value;
-            const clave = document.getElementById('pass').value;
-
-            // Por ahora dejamos entrar con cualquier cosa para probar
-            if(usuario !== "" && clave !== "") {
-                document.getElementById('pantalla-login').classList.add('hidden');
-                document.getElementById('pantalla-menu').classList.remove('hidden');
-            } else {
-                alert("Por favor ingresa usuario y contraseña");
-            }
-        }
-
-        function cerrarSesion() {
-            document.getElementById('pantalla-login').classList.remove('hidden');
-            document.getElementById('pantalla-menu').classList.add('hidden');
+        function irA(idPantalla) {
+            // Ocultar todas las pantallas
+            document.querySelectorAll('.pantalla').forEach(p => p.classList.remove('activa'));
+            // Mostrar la elegida
+            document.getElementById(idPantalla).classList.add('activa');
         }
     </script>
 </body>
