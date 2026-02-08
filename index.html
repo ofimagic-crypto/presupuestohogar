@@ -2,45 +2,53 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>App Presupuesto Hogar</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>App Presupuesto Mentoría</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body { font-family: sans-serif; touch-action: manipulation; }
-        .boton-menu { transition: all 0.2s; border-radius: 1rem; }
-        .boton-menu:active { transform: scale(0.95); }
+        /* Esto hace que en PC se vea como una App centrada y no estirada */
+        .contenedor-app {
+            max-width: 450px;
+            margin: 0 auto;
+            min-height: 100vh;
+            background: white;
+            box-shadow: 0 0 50px rgba(0,0,0,0.1);
+        }
     </style>
 </head>
-<body class="bg-slate-100 min-h-screen">
-    <div id="app" class="max-w-md mx-auto p-4">
-        <div class="text-center py-6">
-            <h1 class="text-2xl font-extrabold text-blue-900 tracking-tight">MENTORÍA TRADING</h1>
-            <p class="text-slate-500 text-sm">Control de Presupuesto Real</p>
+<body class="bg-slate-200">
+    <div class="contenedor-app p-6">
+        <header class="text-center mb-8">
+            <h1 class="text-3xl font-black text-blue-900">PRESUPUESTO</h1>
+            <p class="text-slate-500 font-bold">Trading & Hogar</p>
+        </header>
+
+        <div id="seccion-login" class="space-y-4">
+            <div class="bg-blue-50 p-6 rounded-3xl border-2 border-blue-100">
+                <input type="text" id="usuario" placeholder="Usuario" class="w-full p-4 rounded-2xl mb-3 border-none shadow-sm">
+                <input type="password" id="pass" placeholder="Contraseña" class="w-full p-4 rounded-2xl mb-4 border-none shadow-sm">
+                <button onclick="iniciarApp()" class="w-full bg-blue-900 text-white p-4 rounded-2xl font-bold text-lg shadow-lg active:scale-95 transition">INGRESAR</button>
+            </div>
         </div>
 
-        <div class="grid grid-cols-2 gap-4 mb-8">
-            <button class="boton-menu bg-emerald-500 text-white p-6 shadow-lg shadow-emerald-200">
-                <span class="block text-2xl">💰</span>
-                <span class="font-bold">Ingresos</span>
-            </button>
-            <button class="boton-menu bg-rose-500 text-white p-6 shadow-lg shadow-rose-200">
-                <span class="block text-2xl">💸</span>
-                <span class="font-bold">Gastos</span>
-            </button>
-            <button class="boton-menu bg-blue-600 text-white p-6 shadow-lg shadow-blue-200">
-                <span class="block text-2xl">📊</span>
-                <span class="font-bold">Listado</span>
-            </button>
-            <button class="boton-menu bg-indigo-700 text-white p-6 shadow-lg shadow-indigo-200">
-                <span class="block text-2xl">🚀</span>
-                <span class="font-bold">Proyección</span>
-            </button>
-        </div>
-
-        <div class="bg-white p-6 rounded-3xl shadow-sm border border-slate-200 text-center">
-            <p class="text-slate-600">Bienvenido, <strong>Jhon Jairo</strong></p>
-            <p class="text-xs text-slate-400 mt-2 italic">"La disciplina financiera es la base del éxito en el Trading"</p>
+        <div id="seccion-app" class="hidden">
+            <div class="grid grid-cols-2 gap-4">
+                <button class="bg-emerald-500 text-white p-6 rounded-3xl shadow-md font-bold">INGRESOS</button>
+                <button class="bg-rose-500 text-white p-6 rounded-3xl shadow-md font-bold">GASTOS</button>
+                <button class="bg-blue-600 text-white p-6 rounded-3xl shadow-md font-bold col-span-2">PROYECCIÓN 3 MESES</button>
+            </div>
+            
+            <div class="mt-8 p-4 bg-slate-50 rounded-2xl border-dashed border-2 border-slate-300">
+                <p class="text-center text-slate-400 text-sm italic">"Los datos guardados en este dispositivo son privados."</p>
+            </div>
         </div>
     </div>
+
+    <script>
+        function iniciarApp() {
+            document.getElementById('seccion-login').classList.add('hidden');
+            document.getElementById('seccion-app').classList.remove('hidden');
+        }
+    </script>
 </body>
 </html>
