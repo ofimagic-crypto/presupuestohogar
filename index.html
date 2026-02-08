@@ -29,6 +29,7 @@
         <div id="pantalla-login" class="pantalla activa space-y-4">
             <div class="bg-white p-8 rounded-[2.5rem] shadow-xl text-center border">
                 <div class="space-y-4">
+                    <p class="text-xs text-slate-400 font-bold uppercase">Acceso o Registro Nuevo</p>
                     <input type="text" id="user-acceso" placeholder="Usuario" class="w-full text-center font-bold">
                     <input type="password" id="pass-acceso" placeholder="Contraseña" class="w-full text-center font-bold">
                     <button onclick="entrarApp()" class="w-full bg-slate-800 text-white p-4 rounded-2xl font-black shadow-lg boton-accion uppercase">Entrar</button>
@@ -38,6 +39,7 @@
 
         <div id="pantalla-menu" class="pantalla space-y-4">
             <div class="bg-slate-800 text-white p-6 rounded-[2.5rem] shadow-xl text-center border-b-4 border-blue-500">
+                <p id="saludo-usuario" class="text-[10px] text-blue-300 font-bold uppercase mb-2"></p>
                 <p class="text-xs opacity-70 uppercase font-bold mb-1">Saldo Disponible</p>
                 <h2 id="saldo-total" class="text-4xl font-black">$ 0</h2>
             </div>
@@ -46,9 +48,10 @@
                 <button onclick="abrirGestion('ingresos')" class="boton-accion bg-emerald-500 text-white p-5 rounded-2xl shadow-md font-bold flex justify-between"><span>💰 Ingresos</span> <i class="fa-solid fa-chevron-right opacity-40"></i></button>
                 <button onclick="abrirGestion('gastos')" class="boton-accion bg-rose-500 text-white p-5 rounded-2xl shadow-md font-bold flex justify-between"><span>💸 Gastos</span> <i class="fa-solid fa-chevron-right opacity-40"></i></button>
                 <button onclick="abrirListado()" class="boton-accion bg-blue-600 text-white p-5 rounded-2xl shadow-md font-bold flex justify-between"><span>📊 Listado de Gastos</span> <i class="fa-solid fa-chevron-right opacity-40"></i></button>
-                <button onclick="irA('pantalla-clasificar')" class="boton-accion bg-amber-500 text-white p-5 rounded-2xl shadow-md font-bold flex justify-between"><span>🔍 Clasificar Gastos</span> <i class="fa-solid fa-chevron-right opacity-40"></i></button>
+                <button onclick="irA('pantalla-menu')" class="boton-accion bg-amber-500 text-white p-5 rounded-2xl shadow-md font-bold flex justify-between opacity-50 cursor-not-allowed"><span>🔍 Clasificar Gastos</span> <i class="fa-solid fa-lock text-[10px]"></i></button>
                 <button onclick="abrirProyeccion()" class="boton-accion bg-indigo-700 text-white p-5 rounded-2xl shadow-md font-bold flex justify-between"><span>🚀 Proyectar Ajustes</span> <i class="fa-solid fa-chevron-right opacity-40"></i></button>
             </div>
+            <button onclick="irA('pantalla-login')" class="w-full text-slate-400 text-xs font-bold py-4">SALIR / CAMBIAR USUARIO</button>
         </div>
 
         <div id="pantalla-gestion" class="pantalla space-y-4">
@@ -57,11 +60,11 @@
                 <span id="total-gestion" class="font-black text-blue-600"></span>
             </div>
             
-            <div class="bg-white rounded-2xl shadow overflow-hidden border max-h-60 overflow-y-auto">
+            <div class="bg-white rounded-2xl shadow overflow-hidden border max-h-[300px] overflow-y-auto">
                 <table class="w-full text-xs">
                     <thead class="bg-slate-50 border-b sticky top-0">
                         <tr class="text-slate-500 uppercase">
-                            <th class="p-3 text-left">Detalle/Fecha</th>
+                            <th class="p-3 text-left">Detalle</th>
                             <th class="p-3 text-right">Valor</th>
                             <th class="p-3 text-center">Acción</th>
                         </tr>
@@ -72,25 +75,10 @@
 
             <div class="bg-slate-800 p-4 rounded-3xl shadow-xl space-y-2">
                 <div class="grid grid-cols-2 gap-2">
-                    <input type="text" id="nuevo-detalle" placeholder="¿Qué es?" class="p-2 text-xs">
+                    <input type="text" id="nuevo-detalle" placeholder="Detalle" class="p-2 text-xs">
                     <input type="date" id="nuevo-fecha" class="p-2 text-xs">
                 </div>
                 <div id="campos-gastos-extra" class="hidden grid grid-cols-3 gap-1 text-[9px] font-bold">
                     <select id="g-pri"><option value="Fijo">FIJO</option><option value="Variable">VARIABLE</option></select>
                     <select id="g-per"><option value="Continuo">CONTINUO</option><option value="Eventual">EVENTUAL</option></select>
-                    <select id="g-tip"><option value="Esencial">ESENCIAL</option><option value="Basico">BASICO</option><option value="Secundario">SECUNDARIO</option></select>
-                </div>
-                <div class="flex gap-2">
-                    <input type="number" id="nuevo-valor" placeholder="Valor $" class="flex-1 font-bold text-lg">
-                    <button onclick="agregarDato()" class="bg-emerald-500 text-white px-6 rounded-xl font-black">OK</button>
-                </div>
-            </div>
-            <button onclick="irA('pantalla-menu')" class="w-full text-slate-400 font-bold py-2">Cerrar</button>
-        </div>
-
-        <div id="pantalla-listado" class="pantalla space-y-4">
-            <div class="grid grid-cols-2 gap-2 text-center">
-                <div class="bg-emerald-500 text-white p-4 rounded-2xl">
-                    <p class="text-[10px] uppercase font-bold">Ingresos</p>
-                    <p id="list-ing" class="text-xl font-black"></p>
-                </div>
+                    <select id="g-tip"><option value="Esencial">ESENCIAL</option><option value="Basico">BASICO</option><option value
