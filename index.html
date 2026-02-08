@@ -14,54 +14,61 @@
 </head>
 <body class="bg-slate-200">
     <div class="contenedor-app p-4 shadow-2xl flex flex-col">
+        
         <header class="text-center py-6">
             <h1 class="text-2xl font-black text-slate-800 uppercase tracking-tighter">Presupuesto Hogar</h1>
-            <p class="text-slate-500 text-xs font-bold uppercase tracking-widest">Control de Gastos e Ingresos</p>
+            <p class="text-slate-500 text-xs font-bold uppercase tracking-widest">Gestión Jhon Jairo</p>
         </header>
 
         <div id="pantalla-login" class="pantalla activa space-y-4">
             <div class="bg-white p-8 rounded-[2rem] shadow-lg border text-center">
-                <input type="password" id="pass-acceso" placeholder="Contraseña de acceso" class="w-full p-4 rounded-2xl mb-4 border-2 outline-none focus:border-blue-600 text-center">
+                <input type="password" id="pass-acceso" placeholder="Contraseña de acceso" class="w-full p-4 rounded-2xl mb-4 border-2 outline-none focus:border-slate-800 text-center">
                 <button onclick="entrarApp()" class="w-full bg-slate-800 text-white p-4 rounded-2xl font-bold shadow-lg boton-accion">ENTRAR</button>
             </div>
         </div>
 
         <div id="pantalla-menu" class="pantalla space-y-4">
             <div class="bg-slate-800 text-white p-8 rounded-[2rem] shadow-xl mb-6 text-center border-b-4 border-blue-500">
-                <p class="text-xs opacity-70 uppercase font-bold mb-1 text-blue-300">Saldo Disponible</p>
+                <p class="text-xs opacity-70 uppercase font-bold mb-1 text-blue-300">Saldo en Casa</p>
                 <h2 id="saldo-total" class="text-4xl font-black">$ 0.00</h2>
             </div>
             <div class="grid grid-cols-2 gap-4">
                 <button onclick="irA('pantalla-ingresos')" class="boton-accion bg-emerald-500 text-white p-6 rounded-[2rem] shadow-lg font-bold">💰 Ingresos</button>
                 <button onclick="irA('pantalla-gastos')" class="boton-accion bg-rose-500 text-white p-6 rounded-[2rem] shadow-lg font-bold">💸 Gastos</button>
-                <button onclick="irA('pantalla-listado')" class="boton-accion bg-blue-600 text-white p-6 rounded-[2rem] shadow-lg font-bold col-span-2">📊 Historial de Gastos</button>
+                <button onclick="irA('pantalla-listado')" class="boton-accion bg-blue-600 text-white p-6 rounded-[2rem] shadow-lg font-bold col-span-2">📊 Historial del Hogar</button>
+                <button onclick="irA('pantalla-proyeccion')" class="boton-accion bg-indigo-700 text-white p-6 rounded-[2rem] shadow-lg font-bold col-span-2">🚀 Proyección 3 Meses</button>
             </div>
         </div>
 
         <div id="pantalla-ingresos" class="pantalla space-y-4">
             <h2 class="text-xl font-bold text-emerald-600 text-center">Nuevo Ingreso</h2>
             <input type="number" id="monto-in" placeholder="Monto $" class="w-full p-5 rounded-2xl border-2 outline-none focus:border-emerald-500 text-xl font-bold">
-            <input type="text" id="desc-in" placeholder="Nota (Ej: Salario, Venta)" class="w-full p-4 rounded-2xl border-2 outline-none focus:border-emerald-500">
+            <input type="text" id="desc-in" placeholder="Nota corta (max 50)" maxlength="50" class="w-full p-4 rounded-2xl border-2 outline-none focus:border-emerald-500">
             <button onclick="guardarDato('in')" class="w-full bg-emerald-600 text-white p-5 rounded-2xl font-bold text-xl shadow-lg boton-accion">GUARDAR</button>
-            <button onclick="irA('pantalla-menu')" class="w-full text-slate-400">Cancelar</button>
+            <button onclick="irA('pantalla-menu')" class="w-full text-slate-400">Volver</button>
         </div>
 
         <div id="pantalla-gastos" class="pantalla space-y-4">
             <h2 class="text-xl font-bold text-rose-600 text-center">Nuevo Gasto</h2>
             <select id="tipo-gas" class="w-full p-5 rounded-2xl border-2 bg-white font-bold">
-                <option value="Básico">Gasto Básico</option>
-                <option value="Secundario">Gasto Secundario</option>
-                <option value="Superfluo">Gasto Superfluo</option>
+                <option value="Básico">Básico</option>
+                <option value="Secundario">Secundario</option>
+                <option value="Superfluo">Superfluo</option>
             </select>
             <input type="number" id="monto-gas" placeholder="Monto $" class="w-full p-5 rounded-2xl border-2 outline-none focus:border-rose-500 text-xl font-bold">
             <button onclick="guardarDato('gas')" class="w-full bg-rose-600 text-white p-5 rounded-2xl font-bold text-xl shadow-lg boton-accion">REGISTRAR</button>
-            <button onclick="irA('pantalla-menu')" class="w-full text-slate-400">Cancelar</button>
+            <button onclick="irA('pantalla-menu')" class="w-full text-slate-400">Volver</button>
         </div>
     </div>
 
     <script>
-        let saldo = parseFloat(localStorage.getItem('saldo_hogar')) || 0;
-        document.getElementById('saldo-total').innerText = `$ ${saldo.toLocaleString()}`;
+        // Cargar saldo guardado
+        let saldo = parseFloat(localStorage.getItem('saldo_hogar_v2')) || 0;
+        actualizarDisplay();
+
+        function actualizarDisplay() {
+            document.getElementById('saldo-total').innerText = `$ ${saldo.toLocaleString('es-CO')}`;
+        }
 
         function irA(id) {
             document.querySelectorAll('.pantalla').forEach(p => p.classList.remove('activa'));
@@ -69,20 +76,29 @@
         }
 
         function entrarApp() {
-            if(document.getElementById('pass-acceso').value !== "") irA('pantalla-menu');
+            const pass = document.getElementById('pass-acceso').value;
+            if(pass !== "") irA('pantalla-menu');
         }
 
         function guardarDato(tipo) {
-            if(tipo === 'in') {
-                saldo += parseFloat(document.getElementById('monto-in').value) || 0;
-                document.getElementById('monto-in').value = "";
-            } else {
-                saldo -= parseFloat(document.getElementById('monto-gas').value) || 0;
-                document.getElementById('monto-gas').value = "";
+            const inputMonto = tipo === 'in' ? 'monto-in' : 'monto-gas';
+            const valor = parseFloat(document.getElementById(inputMonto).value) || 0;
+
+            if(valor > 0) {
+                if(tipo === 'in') {
+                    saldo += valor;
+                    document.getElementById('monto-in').value = "";
+                    document.getElementById('desc-in').value = "";
+                } else {
+                    saldo -= valor;
+                    document.getElementById('monto-gas').value = "";
+                }
+                
+                localStorage.setItem('saldo_hogar_v2', saldo);
+                actualizarDisplay();
             }
-            localStorage.setItem('saldo_hogar', saldo);
-            document.getElementById('saldo-total').innerText = `$ ${saldo.toLocaleString()}`;
-            irA('pantalla-menu'); 
+            // Regresa al menú directamente sin alertas
+            irA('pantalla-menu');
         }
     </script>
 </body>
