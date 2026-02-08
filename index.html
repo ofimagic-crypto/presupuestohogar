@@ -10,8 +10,10 @@
         .contenedor-app { max-width: 500px; margin: 0 auto; min-height: 100vh; background: #f1f5f9; }
         .pantalla { display: none; }
         .pantalla.activa { display: block; }
-        input, select { border: 1px solid #cbd5e1 !important; border-radius: 12px; padding: 10px; outline: none; }
-        input:focus { border-color: #3b82f6 !important; }
+        input, select { border: 1px solid #cbd5e1 !important; border-radius: 12px; padding: 12px; outline: none; transition: 0.2s; }
+        input:focus { border-color: #3b82f6 !important; background: #fff; }
+        .boton-principal { transition: transform 0.1s ease; cursor: pointer; }
+        .boton-principal:active { transform: scale(0.95); background-color: #000; }
     </style>
 </head>
 <body class="bg-slate-300">
@@ -25,28 +27,163 @@
         <div id="pantalla-login" class="pantalla activa space-y-4">
             <div class="bg-white p-8 rounded-[2.5rem] shadow-xl text-center border">
                 <div class="space-y-4">
-                    <p class="text-xs text-slate-400 font-bold uppercase">Ingresa o crea tu usuario</p>
-                    <input type="text" id="user-acceso" placeholder="Usuario" class="w-full text-center font-bold">
+                    <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Acceso de Usuario</p>
+                    <input type="text" id="user-acceso" placeholder="Usuario" class="w-full text-center font-bold bg-slate-50">
                     
-                    <div class="relative">
-                        <input type="password" id="pass-acceso" placeholder="Contraseña" class="w-full text-center font-bold">
-                        <button type="button" onclick="togglePass()" class="absolute right-4 top-3 text-slate-400">
-                            <i id="icono-ojo" class="fa-solid fa-eye"></i>
+                    <div class="relative w-full">
+                        <input type="password" id="pass-acceso" placeholder="Contraseña" class="w-full text-center font-bold bg-slate-50">
+                        <button type="button" onclick="verClave()" class="absolute right-4 top-4 text-slate-400 hover:text-blue-600">
+                            <i id="ojo-icono" class="fa-solid fa-eye"></i>
                         </button>
                     </div>
 
-                    <button id="btn-entrar" onclick="entrarApp()" class="w-full bg-slate-800 text-white p-4 rounded-2xl font-black uppercase shadow-lg">Entrar</button>
+                    <button id="btn-entrar" onclick="entrarApp()" class="boton-principal w-full bg-slate-800 text-white p-4 rounded-2xl font-black uppercase shadow-lg">
+                        Entrar
+                    </button>
+                    <p class="text-[9px] text-slate-400">Si el usuario no existe, se creará automáticamente.</p>
                 </div>
             </div>
         </div>
 
         <div id="pantalla-menu" class="pantalla space-y-4">
             <div class="bg-slate-800 text-white p-6 rounded-[2.5rem] shadow-xl text-center border-b-4 border-blue-500">
-                <p id="display-user" class="text-[10px] text-blue-300 font-bold uppercase mb-2"></p>
+                <p id="label-user" class="text-[10px] text-blue-300 font-bold uppercase mb-2"></p>
+                <p class="text-xs opacity-50 uppercase">Saldo Disponible</p>
                 <h2 id="saldo-total" class="text-4xl font-black">$ 0</h2>
             </div>
             <div class="grid grid-cols-1 gap-3">
-                <button onclick="abrirGestion('ingresos')" class="bg-emerald-500 text-white p-5 rounded-2xl font-bold flex justify-between"><span>💰 Ingresos</span> <i class="fa-solid fa-chevron-right"></i></button>
-                <button onclick="abrirGestion('gastos')" class="bg-rose-500 text-white p-5 rounded-2xl font-bold flex justify-between"><span>💸 Gastos</span> <i class="fa-solid fa-chevron-right"></i></button>
-                <button onclick="abrirListado()" class="bg-blue-600 text-white p-5 rounded-2xl font-bold flex justify-between"><span>📊 Listado de Gastos</span> <i class="fa-solid fa-chevron-right"></i></button>
-                <button onclick="abrirProyeccion()" class="bg-indigo-700 text-white p
+                <button onclick="abrirGestion('ingresos')" class="bg-emerald-500 text-white p-5 rounded-2xl font-bold flex justify-between shadow-md active:scale-95"><span>💰 Ingresos</span> <i class="fa-solid fa-chevron-right"></i></button>
+                <button onclick="abrirGestion('gastos')" class="bg-rose-500 text-white p-5 rounded-2xl font-bold flex justify-between shadow-md active:scale-95"><span>💸 Gastos</span> <i class="fa-solid fa-chevron-right"></i></button>
+                <button onclick="abrirListado()" class="bg-blue-600 text-white p-5 rounded-2xl font-bold flex justify-between shadow-md active:scale-95"><span>📊 Listado de Gastos</span> <i class="fa-solid fa-chevron-right"></i></button>
+                <button onclick="abrirProyeccion()" class="bg-indigo-700 text-white p-5 rounded-2xl font-bold flex justify-between shadow-md active:scale-95"><span>🚀 Proyectar Ajustes</span> <i class="fa-solid fa-chevron-right"></i></button>
+            </div>
+            <button onclick="location.reload()" class="w-full text-slate-400 text-xs font-bold py-4">SALIR DE LA SESIÓN</button>
+        </div>
+
+        <div id="pantalla-gestion" class="pantalla space-y-4">
+            <div class="flex justify-between items-center bg-white p-4 rounded-2xl shadow-sm">
+                <h2 id="titulo-gestion" class="text-lg font-black uppercase text-slate-700"></h2>
+                <span id="total-gestion" class="font-black text-blue-600"></span>
+            </div>
+            <div class="bg-white rounded-2xl shadow overflow-hidden border max-h-60 overflow-y-auto">
+                <table class="w-full text-xs">
+                    <tbody id="tabla-cuerpo"></tbody>
+                </table>
+            </div>
+            <div class="bg-slate-800 p-4 rounded-3xl space-y-2 shadow-2xl">
+                <div class="grid grid-cols-2 gap-2">
+                    <input type="text" id="nuevo-detalle" placeholder="¿Qué es?" class="p-2 text-xs">
+                    <input type="date" id="nuevo-fecha" class="p-2 text-xs">
+                </div>
+                <div class="flex gap-2">
+                    <input type="number" id="nuevo-valor" placeholder="Valor $" class="flex-1 font-bold text-lg">
+                    <button onclick="agregarDato()" class="bg-emerald-500 text-white px-8 rounded-xl font-black shadow-lg">OK</button>
+                </div>
+            </div>
+            <button onclick="irA('pantalla-menu')" class="w-full text-slate-500 font-bold py-2">Volver al Inicio</button>
+        </div>
+
+        <div id="pantalla-listado" class="pantalla space-y-4">
+            <div id="cuadro-resultado" class="p-8 rounded-[3rem] text-center font-black text-2xl border-4 bg-white shadow-xl"></div>
+            <button onclick="irA('pantalla-menu')" class="w-full bg-slate-800 text-white p-4 rounded-2xl font-bold uppercase">Regresar</button>
+        </div>
+
+        <div id="pantalla-proyeccion" class="pantalla space-y-4">
+            <div class="bg-white p-4 rounded-2xl border flex items-center justify-between shadow-sm">
+                <span class="text-xs font-bold uppercase">Meses:</span>
+                <input type="number" id="num-periodos" value="3" class="w-20 text-center font-black">
+                <button onclick="renderProyeccion()" class="bg-indigo-600 text-white px-4 py-2 rounded-xl font-bold text-xs">VER</button>
+            </div>
+            <div id="contenedor-proyeccion" class="space-y-3 overflow-y-auto max-h-[400px] p-1"></div>
+            <button onclick="irA('pantalla-menu')" class="w-full text-slate-500 font-bold text-xs uppercase text-center">Menú Principal</button>
+        </div>
+
+    </div>
+
+    <script>
+        // BASE DE DATOS
+        let usuarios = JSON.parse(localStorage.getItem('DB_USERS_HOGAR')) || {};
+        let miUsuario = "";
+        let miModo = "";
+
+        // FUNCIÓN TECLA ENTER (Global)
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Enter') {
+                const esLogin = document.getElementById('pantalla-login').classList.contains('activa');
+                const esGestion = document.getElementById('pantalla-gestion').classList.contains('activa');
+                
+                if (esLogin) {
+                    entrarApp();
+                } else if (esGestion) {
+                    agregarDato();
+                }
+            }
+        });
+
+        // VER/OCULTAR CLAVE
+        function verClave() {
+            const input = document.getElementById('pass-acceso');
+            const icono = document.getElementById('ojo-icono');
+            if (input.type === "password") {
+                input.type = "text";
+                icono.classList.replace('fa-eye', 'fa-eye-slash');
+            } else {
+                input.type = "password";
+                icono.classList.replace('fa-eye-slash', 'fa-eye');
+            }
+        }
+
+        function irA(id) {
+            document.querySelectorAll('.pantalla').forEach(p => p.classList.remove('activa'));
+            document.getElementById(id).classList.add('activa');
+        }
+
+        // ENTRAR / CREAR USUARIO
+        function entrarApp() {
+            const u = document.getElementById('user-acceso').value.trim().toLowerCase();
+            const p = document.getElementById('pass-acceso').value;
+
+            if (!u || !p) {
+                alert("Por favor completa usuario y contraseña.");
+                return;
+            }
+
+            // Lógica de creación automática
+            if (!usuarios[u]) {
+                usuarios[u] = { clave: p, ingresos: [], gastos: [] };
+                localStorage.setItem('DB_USERS_HOGAR', JSON.stringify(usuarios));
+            }
+
+            // Validar clave
+            if (usuarios[u].clave === p) {
+                miUsuario = u;
+                document.getElementById('label-user').innerText = "Bienvenido: " + u;
+                actualizarVistaPrincipal();
+                irA('pantalla-menu');
+            } else {
+                alert("Contraseña incorrecta para el usuario: " + u);
+            }
+        }
+
+        function actualizarVistaPrincipal() {
+            const d = usuarios[miUsuario];
+            const ti = d.ingresos.reduce((s, x) => s + (parseFloat(x.valor) || 0), 0);
+            const tg = d.gastos.reduce((s, x) => s + (parseFloat(x.valor) || 0), 0);
+            document.getElementById('saldo-total').innerText = `$ ${(ti - tg).toLocaleString()}`;
+            localStorage.setItem('DB_USERS_HOGAR', JSON.stringify(usuarios));
+        }
+
+        function abrirGestion(tipo) {
+            miModo = tipo;
+            document.getElementById('titulo-gestion').innerText = tipo;
+            pintarTabla();
+            irA('pantalla-gestion');
+        }
+
+        function pintarTabla() {
+            const lista = usuarios[miUsuario][miModo];
+            const cuerpo = document.getElementById('tabla-cuerpo');
+            let suma = 0; 
+            cuerpo.innerHTML = '';
+            
+            lista.forEach
