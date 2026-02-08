@@ -2,6 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Presupuesto Hogar - Ebooks Magic</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -10,6 +11,7 @@
         .pantalla { display: none; }
         .pantalla.activa { display: block; }
         input, select { border: 1px solid #cbd5e1 !important; border-radius: 12px; padding: 10px; outline: none; }
+        input:focus { border-color: #3b82f6 !important; }
     </style>
 </head>
 <body class="bg-slate-300">
@@ -23,9 +25,17 @@
         <div id="pantalla-login" class="pantalla activa space-y-4">
             <div class="bg-white p-8 rounded-[2.5rem] shadow-xl text-center border">
                 <div class="space-y-4">
+                    <p class="text-xs text-slate-400 font-bold uppercase">Ingresa o crea tu usuario</p>
                     <input type="text" id="user-acceso" placeholder="Usuario" class="w-full text-center font-bold">
-                    <input type="password" id="pass-acceso" placeholder="Contraseña" class="w-full text-center font-bold">
-                    <button id="btn-entrar" onclick="entrarApp()" class="w-full bg-slate-800 text-white p-4 rounded-2xl font-black uppercase">Entrar</button>
+                    
+                    <div class="relative">
+                        <input type="password" id="pass-acceso" placeholder="Contraseña" class="w-full text-center font-bold">
+                        <button type="button" onclick="togglePass()" class="absolute right-4 top-3 text-slate-400">
+                            <i id="icono-ojo" class="fa-solid fa-eye"></i>
+                        </button>
+                    </div>
+
+                    <button id="btn-entrar" onclick="entrarApp()" class="w-full bg-slate-800 text-white p-4 rounded-2xl font-black uppercase shadow-lg">Entrar</button>
                 </div>
             </div>
         </div>
@@ -39,135 +49,4 @@
                 <button onclick="abrirGestion('ingresos')" class="bg-emerald-500 text-white p-5 rounded-2xl font-bold flex justify-between"><span>💰 Ingresos</span> <i class="fa-solid fa-chevron-right"></i></button>
                 <button onclick="abrirGestion('gastos')" class="bg-rose-500 text-white p-5 rounded-2xl font-bold flex justify-between"><span>💸 Gastos</span> <i class="fa-solid fa-chevron-right"></i></button>
                 <button onclick="abrirListado()" class="bg-blue-600 text-white p-5 rounded-2xl font-bold flex justify-between"><span>📊 Listado de Gastos</span> <i class="fa-solid fa-chevron-right"></i></button>
-                <button class="bg-amber-500 text-white p-5 rounded-2xl font-bold flex justify-between opacity-50"><span>🔍 Clasificar Gastos</span> <i class="fa-solid fa-lock"></i></button>
-                <button onclick="abrirProyeccion()" class="bg-indigo-700 text-white p-5 rounded-2xl font-bold flex justify-between"><span>🚀 Proyectar Ajustes</span> <i class="fa-solid fa-chevron-right"></i></button>
-            </div>
-        </div>
-
-        <div id="pantalla-gestion" class="pantalla space-y-4">
-            <div class="flex justify-between items-center bg-white p-3 rounded-2xl shadow-sm">
-                <h2 id="titulo-gestion" class="text-lg font-black uppercase text-slate-700"></h2>
-                <span id="total-gestion" class="font-black text-blue-600"></span>
-            </div>
-            <div class="bg-white rounded-2xl shadow overflow-hidden border max-h-60 overflow-y-auto">
-                <table class="w-full text-xs">
-                    <tbody id="tabla-cuerpo"></tbody>
-                </table>
-            </div>
-            <div class="bg-slate-800 p-4 rounded-3xl space-y-2">
-                <div class="grid grid-cols-2 gap-2">
-                    <input type="text" id="nuevo-detalle" placeholder="Detalle" class="p-2 text-xs">
-                    <input type="date" id="nuevo-fecha" class="p-2 text-xs">
-                </div>
-                <div id="campos-gastos-extra" class="hidden grid grid-cols-3 gap-1 text-[9px] font-bold">
-                    <select id="g-pri"><option value="Fijo">FIJO</option><option value="Variable">VARIABLE</option></select>
-                    <select id="g-per"><option value="Continuo">CONTINUO</option><option value="Eventual">EVENTUAL</option></select>
-                    <select id="g-tip"><option value="Esencial">ESENCIAL</option><option value="Basico">BASICO</option><option value="Secundario">SECUNDARIO</option></select>
-                </div>
-                <div class="flex gap-2">
-                    <input type="number" id="nuevo-valor" placeholder="Valor $" class="flex-1 font-bold">
-                    <button onclick="agregarDato()" class="bg-emerald-500 text-white px-6 rounded-xl font-black">OK</button>
-                </div>
-            </div>
-            <button onclick="irA('pantalla-menu')" class="w-full text-slate-400 font-bold py-2">Volver</button>
-        </div>
-
-        <div id="pantalla-listado" class="pantalla space-y-4">
-            <div id="cuadro-resultado" class="p-8 rounded-[3rem] text-center font-black text-2xl border-4 bg-white"></div>
-            <button onclick="irA('pantalla-menu')" class="w-full bg-slate-800 text-white p-4 rounded-2xl font-bold">VOLVER</button>
-        </div>
-
-        <div id="pantalla-proyeccion" class="pantalla space-y-4">
-            <div class="bg-white p-4 rounded-2xl border flex items-center justify-between">
-                <input type="number" id="num-periodos" value="3" class="w-20 text-center font-black">
-                <button onclick="renderProyeccion()" class="bg-indigo-600 text-white px-4 py-2 rounded-xl font-bold">CALCULAR</button>
-            </div>
-            <div id="contenedor-proyeccion" class="space-y-3 overflow-y-auto max-h-[400px]"></div>
-            <button onclick="irA('pantalla-menu')" class="w-full text-slate-500 font-bold text-xs uppercase text-center">Menú</button>
-        </div>
-
-    </div>
-
-    <script>
-        let dbFull = JSON.parse(localStorage.getItem('db_magic_final')) || {};
-        let user = "";
-        let modo = "";
-
-        // TECLA ENTER
-        document.addEventListener('keydown', (e) => {
-            if(e.key === 'Enter') {
-                if(document.getElementById('pantalla-login').classList.contains('activa')) entrarApp();
-                else if(document.getElementById('pantalla-gestion').classList.contains('activa')) agregarDato();
-            }
-        });
-
-        function irA(id) {
-            document.querySelectorAll('.pantalla').forEach(p => p.classList.remove('activa'));
-            document.getElementById(id).classList.add('activa');
-        }
-
-        function entrarApp() {
-            user = document.getElementById('user-acceso').value.trim().toLowerCase();
-            if(!user) return;
-            if(!dbFull[user]) dbFull[user] = { ingresos: [], gastos: [] };
-            document.getElementById('display-user').innerText = "Usuario: " + user;
-            actualizarSaldo();
-            irA('pantalla-menu');
-        }
-
-        function actualizarSaldo() {
-            let ti = dbFull[user].ingresos.reduce((s, i) => s + (parseFloat(i.valor) || 0), 0);
-            let tg = dbFull[user].gastos.reduce((s, g) => s + (parseFloat(g.valor) || 0), 0);
-            document.getElementById('saldo-total').innerText = `$ ${(ti - tg).toLocaleString()}`;
-            localStorage.setItem('db_magic_final', JSON.stringify(dbFull));
-        }
-
-        function abrirGestion(tipo) {
-            modo = tipo;
-            document.getElementById('titulo-gestion').innerText = tipo;
-            document.getElementById('campos-gastos-extra').classList.toggle('hidden', tipo === 'ingresos');
-            renderTabla();
-            irA('pantalla-gestion');
-        }
-
-        function renderTabla() {
-            const lista = dbFull[user][modo];
-            const cuerpo = document.getElementById('tabla-cuerpo');
-            let t = 0; cuerpo.innerHTML = '';
-            lista.forEach((item, i) => {
-                t += parseFloat(item.valor);
-                cuerpo.innerHTML += `<tr class="border-b"><td class="p-3"><b>${item.detalle}</b></td><td class="p-3 text-right"><b>$${parseFloat(item.valor).toLocaleString()}</b></td><td class="p-3 text-center text-rose-500" onclick="eliminar(${i})"><i class="fa-solid fa-trash"></i></td></tr>`;
-            });
-            document.getElementById('total-gestion').innerText = "Total: $" + t.toLocaleString();
-        }
-
-        function agregarDato() {
-            const det = document.getElementById('nuevo-detalle').value;
-            const val = document.getElementById('nuevo-valor').value;
-            if(!det || !val) return;
-            let obj = { detalle: det, valor: val, fecha: document.getElementById('nuevo-fecha').value };
-            dbFull[user][modo].push(obj);
-            actualizarSaldo();
-            renderTabla();
-            document.getElementById('nuevo-detalle').value = '';
-            document.getElementById('nuevo-valor').value = '';
-            document.getElementById('nuevo-detalle').focus();
-        }
-
-        function eliminar(i) {
-            dbFull[user][modo].splice(i, 1);
-            actualizarSaldo();
-            renderTabla();
-        }
-
-        function abrirListado() {
-            let ti = dbFull[user].ingresos.reduce((s, i) => s + (parseFloat(i.valor) || 0), 0);
-            let tg = dbFull[user].gastos.reduce((s, g) => s + (parseFloat(g.valor) || 0), 0);
-            let d = ti - tg;
-            const c = document.getElementById('cuadro-resultado');
-            c.innerHTML = d >= 0 ? `¡FELICITACIONES! 🎉<br><small>$${d.toLocaleString()}</small>` : `DEBE TRABAJAR EN AJUSTES ⚠️<br><small>$${Math.abs(d).toLocaleString()}</small>`;
-            c.style.borderColor = d >= 0 ? '#10b981' : '#f43f5e';
-            irA('pantalla-listado');
-        }
-
-        function abrirProyeccion() { renderProyeccion(); irA('pantalla-
+                <button onclick="abrirProyeccion()" class="bg-indigo-700 text-white p
