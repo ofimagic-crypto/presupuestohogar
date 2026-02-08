@@ -5,67 +5,49 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>App Mentoría Trading</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        .contenedor-app { max-width: 450px; margin: 0 auto; min-height: 100vh; background: #f8fafc; }
-        .pantalla { display: none; }
-        .pantalla.activa { display: block; }
-    </style>
 </head>
-<body>
-    <div class="contenedor-app p-4 shadow-2xl">
-        <header class="text-center py-6">
+<body class="bg-slate-900 text-slate-800">
+    <div style="max-width: 450px;" class="mx-auto min-h-screen bg-white shadow-2xl p-6">
+        
+        <header class="text-center mb-8">
             <h1 class="text-2xl font-black text-blue-900">MENTORÍA TRADING</h1>
-            <p class="text-slate-500 text-sm">Control de Presupuesto Real</p>
+            <p class="text-slate-500 text-xs uppercase tracking-widest">Gestión Jhon Jairo</p>
         </header>
 
-        <div id="menu" class="pantalla activa space-y-4">
+        <div id="seccion-login" class="block">
+            <div class="bg-slate-50 p-6 rounded-3xl border shadow-inner">
+                <input type="password" id="pass" placeholder="Contraseña de acceso" class="w-full p-4 rounded-2xl mb-4 border-2 outline-none focus:border-blue-500">
+                <button onclick="entrar()" class="w-full bg-blue-900 text-white p-4 rounded-2xl font-bold shadow-lg">INGRESAR AHORA</button>
+            </div>
+        </div>
+
+        <div id="seccion-menu" class="hidden space-y-4">
             <div class="grid grid-cols-2 gap-4">
-                <button onclick="irA('pantalla-ingresos')" class="bg-emerald-500 text-white p-6 rounded-3xl shadow-lg font-bold">
-                    <span class="block text-2xl">💰</span> Ingresos
-                </button>
-                <button onclick="irA('pantalla-gastos')" class="bg-rose-500 text-white p-6 rounded-3xl shadow-lg font-bold">
-                    <span class="block text-2xl">💸</span> Gastos
-                </button>
-                <button onclick="irA('pantalla-listado')" class="bg-blue-600 text-white p-6 rounded-3xl shadow-lg font-bold">
-                    <span class="block text-2xl">📊</span> Listado
-                </button>
-                <button onclick="irA('pantalla-proyeccion')" class="bg-indigo-700 text-white p-6 rounded-3xl shadow-lg font-bold">
-                    <span class="block text-2xl">🚀</span> Proyección
-                </button>
+                <button onclick="mostrarAlerta('Ingresos')" class="bg-emerald-500 text-white p-6 rounded-3xl shadow-lg font-bold">💰 INGRESOS</button>
+                <button onclick="mostrarAlerta('Gastos')" class="bg-rose-500 text-white p-6 rounded-3xl shadow-lg font-bold">💸 GASTOS</button>
+                <button onclick="mostrarAlerta('Listado')" class="bg-blue-600 text-white p-6 rounded-3xl shadow-lg font-bold col-span-2 text-xl">📊 VER LISTADOS</button>
+                <button onclick="mostrarAlerta('Proyección')" class="bg-indigo-700 text-white p-6 rounded-3xl shadow-lg font-bold col-span-2">🚀 PROYECCIÓN 3 MESES</button>
             </div>
-            <div class="bg-white p-6 rounded-3xl shadow-sm border mt-6 text-center">
-                <p class="text-slate-600">Bienvenido, <strong>Jhon Jairo</strong></p>
-                <p class="text-xs text-slate-400 mt-2 italic">"La disciplina financiera es la base del éxito"</p>
-            </div>
+            <button onclick="location.reload()" class="w-full text-slate-400 text-sm mt-8">Cerrar Sesión</button>
         </div>
 
-        <div id="pantalla-ingresos" class="pantalla space-y-4">
-            <h2 class="text-xl font-bold text-emerald-600">Nuevo Ingreso</h2>
-            <input type="number" id="monto-ingreso" placeholder="Monto $" class="w-full p-4 rounded-2xl border">
-            <input type="text" id="desc-ingreso" placeholder="Descripción (max 50 carac.)" maxlength="50" class="w-full p-4 rounded-2xl border">
-            <button onclick="alert('Ingreso Guardado'); irA('menu')" class="w-full bg-emerald-500 text-white p-4 rounded-2xl font-bold">GUARDAR</button>
-            <button onclick="irA('menu')" class="w-full text-slate-400">Volver al menú</button>
-        </div>
-
-        <div id="pantalla-gastos" class="pantalla space-y-4">
-            <h2 class="text-xl font-bold text-rose-600">Nuevo Gasto</h2>
-            <select id="tipo-gasto" class="w-full p-4 rounded-2xl border bg-white">
-                <option value="basico">Básico</option>
-                <option value="secundario">Secundario</option>
-                <option value="superfluo">Superfluo</option>
-            </select>
-            <input type="number" id="monto-gasto" placeholder="Monto $" class="w-full p-4 rounded-2xl border">
-            <button onclick="alert('Gasto Guardado'); irA('menu')" class="w-full bg-rose-500 text-white p-4 rounded-2xl font-bold">REGISTRAR GASTO</button>
-            <button onclick="irA('menu')" class="w-full text-slate-400">Volver al menú</button>
-        </div>
     </div>
 
     <script>
-        function irA(idPantalla) {
-            // Ocultar todas las pantallas
-            document.querySelectorAll('.pantalla').forEach(p => p.classList.remove('activa'));
-            // Mostrar la elegida
-            document.getElementById(idPantalla).classList.add('activa');
+        // Función de entrada directa
+        function entrar() {
+            const clave = document.getElementById('pass').value;
+            if(clave !== "") {
+                document.getElementById('seccion-login').style.display = 'none';
+                document.getElementById('seccion-menu').style.display = 'block';
+            } else {
+                alert("Escribe cualquier contraseña para probar");
+            }
+        }
+
+        // Función para probar botones
+        function mostrarAlerta(nombre) {
+            alert("Has tocado el botón: " + nombre + ". La lógica está activa.");
         }
     </script>
 </body>
