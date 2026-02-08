@@ -10,10 +10,36 @@
         .contenedor-app { max-width: 500px; margin: 0 auto; min-height: 100vh; background: #f1f5f9; }
         .pantalla { display: none; }
         .pantalla.activa { display: block; }
-        input, select { border: 1px solid #cbd5e1 !important; border-radius: 12px; padding: 12px; outline: none; transition: 0.2s; }
+        input, select { border: 2px solid #cbd5e1 !important; border-radius: 12px; padding: 12px; outline: none; width: 100%; }
         input:focus { border-color: #3b82f6 !important; background: #fff; }
-        .boton-principal { transition: transform 0.1s ease; cursor: pointer; }
-        .boton-principal:active { transform: scale(0.95); background-color: #000; }
+        
+        /* Estilo para que el botón se vea y se sienta real */
+        .btn-click { 
+            background-color: #1e293b; 
+            color: white; 
+            padding: 16px; 
+            border-radius: 16px; 
+            font-weight: 900; 
+            text-transform: uppercase;
+            transition: all 0.1s;
+            cursor: pointer;
+            border: none;
+            width: 100%;
+        }
+        .btn-click:active { transform: scale(0.95); background-color: #000; }
+        
+        /* Contenedor relativo para el ojo */
+        .campo-password { position: relative; width: 100%; }
+        .icono-ojo { 
+            position: absolute; 
+            right: 15px; 
+            top: 50%; 
+            transform: translateY(-50%); 
+            cursor: pointer; 
+            color: #94a3b8;
+            z-index: 10;
+            padding: 5px;
+        }
     </style>
 </head>
 <body class="bg-slate-300">
@@ -24,106 +50,89 @@
             <p class="text-blue-600 font-bold text-sm italic">Ebooks Magic</p>
         </header>
 
-        <div id="pantalla-login" class="pantalla activa space-y-4">
+        <div id="pantalla-login" class="pantalla activa space-y-6">
             <div class="bg-white p-8 rounded-[2.5rem] shadow-xl text-center border">
                 <div class="space-y-4">
-                    <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Acceso de Usuario</p>
-                    <input type="text" id="user-acceso" placeholder="Usuario" class="w-full text-center font-bold bg-slate-50">
+                    <p class="text-[10px] text-slate-400 font-bold uppercase">Identificación de Usuario</p>
                     
-                    <div class="relative w-full">
-                        <input type="password" id="pass-acceso" placeholder="Contraseña" class="w-full text-center font-bold bg-slate-50">
-                        <button type="button" onclick="verClave()" class="absolute right-4 top-4 text-slate-400 hover:text-blue-600">
-                            <i id="ojo-icono" class="fa-solid fa-eye"></i>
-                        </button>
+                    <input type="text" id="user-acceso" placeholder="Usuario" class="text-center font-bold">
+                    
+                    <div class="campo-password">
+                        <input type="password" id="pass-acceso" placeholder="Contraseña" class="text-center font-bold">
+                        <span class="icono-ojo" onclick="toggleOjo()">
+                            <i id="ojo-img" class="fa-solid fa-eye"></i>
+                        </span>
                     </div>
 
-                    <button id="btn-entrar" onclick="entrarApp()" class="boton-principal w-full bg-slate-800 text-white p-4 rounded-2xl font-black uppercase shadow-lg">
-                        Entrar
+                    <button type="button" onclick="ejecutarIngreso()" class="btn-click shadow-lg">
+                        Entrar ahora
                     </button>
-                    <p class="text-[9px] text-slate-400">Si el usuario no existe, se creará automáticamente.</p>
+                    
+                    <p class="text-[9px] text-slate-400 italic">Si el usuario no existe, se creará al entrar.</p>
                 </div>
             </div>
         </div>
 
         <div id="pantalla-menu" class="pantalla space-y-4">
             <div class="bg-slate-800 text-white p-6 rounded-[2.5rem] shadow-xl text-center border-b-4 border-blue-500">
-                <p id="label-user" class="text-[10px] text-blue-300 font-bold uppercase mb-2"></p>
-                <p class="text-xs opacity-50 uppercase">Saldo Disponible</p>
+                <p id="usr-actual" class="text-[10px] text-blue-300 font-bold uppercase mb-2"></p>
                 <h2 id="saldo-total" class="text-4xl font-black">$ 0</h2>
             </div>
             <div class="grid grid-cols-1 gap-3">
-                <button onclick="abrirGestion('ingresos')" class="bg-emerald-500 text-white p-5 rounded-2xl font-bold flex justify-between shadow-md active:scale-95"><span>💰 Ingresos</span> <i class="fa-solid fa-chevron-right"></i></button>
-                <button onclick="abrirGestion('gastos')" class="bg-rose-500 text-white p-5 rounded-2xl font-bold flex justify-between shadow-md active:scale-95"><span>💸 Gastos</span> <i class="fa-solid fa-chevron-right"></i></button>
-                <button onclick="abrirListado()" class="bg-blue-600 text-white p-5 rounded-2xl font-bold flex justify-between shadow-md active:scale-95"><span>📊 Listado de Gastos</span> <i class="fa-solid fa-chevron-right"></i></button>
-                <button onclick="abrirProyeccion()" class="bg-indigo-700 text-white p-5 rounded-2xl font-bold flex justify-between shadow-md active:scale-95"><span>🚀 Proyectar Ajustes</span> <i class="fa-solid fa-chevron-right"></i></button>
+                <button onclick="irGestion('ingresos')" class="bg-emerald-500 text-white p-5 rounded-2xl font-bold flex justify-between shadow-md"><span>💰 Ingresos</span> <i class="fa-solid fa-chevron-right"></i></button>
+                <button onclick="irGestion('gastos')" class="bg-rose-500 text-white p-5 rounded-2xl font-bold flex justify-between shadow-md"><span>💸 Gastos</span> <i class="fa-solid fa-chevron-right"></i></button>
+                <button onclick="abrirResumen()" class="bg-blue-600 text-white p-5 rounded-2xl font-bold flex justify-between shadow-md"><span>📊 Listado de Gastos</span> <i class="fa-solid fa-chevron-right"></i></button>
+                <button onclick="abrirProyeccion()" class="bg-indigo-700 text-white p-5 rounded-2xl font-bold flex justify-between shadow-md"><span>🚀 Proyectar Ajustes</span> <i class="fa-solid fa-chevron-right"></i></button>
             </div>
-            <button onclick="location.reload()" class="w-full text-slate-400 text-xs font-bold py-4">SALIR DE LA SESIÓN</button>
+            <button onclick="location.reload()" class="w-full text-slate-400 text-xs font-bold py-8">SALIR</button>
         </div>
 
         <div id="pantalla-gestion" class="pantalla space-y-4">
-            <div class="flex justify-between items-center bg-white p-4 rounded-2xl shadow-sm">
-                <h2 id="titulo-gestion" class="text-lg font-black uppercase text-slate-700"></h2>
-                <span id="total-gestion" class="font-black text-blue-600"></span>
+            <div class="flex justify-between items-center bg-white p-4 rounded-2xl shadow-sm border">
+                <h2 id="tit-gestion" class="text-lg font-black uppercase"></h2>
+                <span id="suma-gestion" class="font-black text-blue-600"></span>
             </div>
-            <div class="bg-white rounded-2xl shadow overflow-hidden border max-h-60 overflow-y-auto">
+            <div class="bg-white rounded-2xl shadow border max-h-64 overflow-y-auto">
                 <table class="w-full text-xs">
-                    <tbody id="tabla-cuerpo"></tbody>
+                    <tbody id="lista-datos"></tbody>
                 </table>
             </div>
             <div class="bg-slate-800 p-4 rounded-3xl space-y-2 shadow-2xl">
                 <div class="grid grid-cols-2 gap-2">
-                    <input type="text" id="nuevo-detalle" placeholder="¿Qué es?" class="p-2 text-xs">
-                    <input type="date" id="nuevo-fecha" class="p-2 text-xs">
+                    <input type="text" id="inp-det" placeholder="¿Qué es?" class="p-2 text-xs">
+                    <input type="date" id="inp-fec" class="p-2 text-xs">
                 </div>
                 <div class="flex gap-2">
-                    <input type="number" id="nuevo-valor" placeholder="Valor $" class="flex-1 font-bold text-lg">
-                    <button onclick="agregarDato()" class="bg-emerald-500 text-white px-8 rounded-xl font-black shadow-lg">OK</button>
+                    <input type="number" id="inp-val" placeholder="Valor $" class="flex-1 font-bold">
+                    <button onclick="guardarNuevo()" class="bg-emerald-500 text-white px-8 rounded-xl font-black">OK</button>
                 </div>
             </div>
-            <button onclick="irA('pantalla-menu')" class="w-full text-slate-500 font-bold py-2">Volver al Inicio</button>
+            <button onclick="cambiarPantalla('pantalla-menu')" class="w-full text-slate-400 font-bold py-2">Volver</button>
         </div>
 
-        <div id="pantalla-listado" class="pantalla space-y-4">
-            <div id="cuadro-resultado" class="p-8 rounded-[3rem] text-center font-black text-2xl border-4 bg-white shadow-xl"></div>
-            <button onclick="irA('pantalla-menu')" class="w-full bg-slate-800 text-white p-4 rounded-2xl font-bold uppercase">Regresar</button>
-        </div>
-
-        <div id="pantalla-proyeccion" class="pantalla space-y-4">
-            <div class="bg-white p-4 rounded-2xl border flex items-center justify-between shadow-sm">
-                <span class="text-xs font-bold uppercase">Meses:</span>
-                <input type="number" id="num-periodos" value="3" class="w-20 text-center font-black">
-                <button onclick="renderProyeccion()" class="bg-indigo-600 text-white px-4 py-2 rounded-xl font-bold text-xs">VER</button>
-            </div>
-            <div id="contenedor-proyeccion" class="space-y-3 overflow-y-auto max-h-[400px] p-1"></div>
-            <button onclick="irA('pantalla-menu')" class="w-full text-slate-500 font-bold text-xs uppercase text-center">Menú Principal</button>
+        <div id="pantalla-resumen" class="pantalla space-y-4">
+            <div id="caja-status" class="p-10 rounded-[3rem] text-center font-black text-2xl border-4 bg-white"></div>
+            <button onclick="cambiarPantalla('pantalla-menu')" class="w-full bg-slate-800 text-white p-4 rounded-2xl font-bold">VOLVER</button>
         </div>
 
     </div>
 
     <script>
-        // BASE DE DATOS
-        let usuarios = JSON.parse(localStorage.getItem('DB_USERS_HOGAR')) || {};
-        let miUsuario = "";
-        let miModo = "";
+        let base_datos = JSON.parse(localStorage.getItem('APP_HOGAR_V5')) || {};
+        let sesion_usuario = "";
+        let modo_vista = "";
 
-        // FUNCIÓN TECLA ENTER (Global)
-        document.addEventListener('keydown', function(event) {
-            if (event.key === 'Enter') {
-                const esLogin = document.getElementById('pantalla-login').classList.contains('activa');
-                const esGestion = document.getElementById('pantalla-gestion').classList.contains('activa');
-                
-                if (esLogin) {
-                    entrarApp();
-                } else if (esGestion) {
-                    agregarDato();
-                }
+        // CONTROL DE TECLA ENTER
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                if (document.getElementById('pantalla-login').classList.contains('activa')) ejecutarIngreso();
+                else if (document.getElementById('pantalla-gestion').classList.contains('activa')) guardarNuevo();
             }
         });
 
-        // VER/OCULTAR CLAVE
-        function verClave() {
+        function toggleOjo() {
             const input = document.getElementById('pass-acceso');
-            const icono = document.getElementById('ojo-icono');
+            const icono = document.getElementById('ojo-img');
             if (input.type === "password") {
                 input.type = "text";
                 icono.classList.replace('fa-eye', 'fa-eye-slash');
@@ -133,57 +142,56 @@
             }
         }
 
-        function irA(id) {
+        function cambiarPantalla(id) {
             document.querySelectorAll('.pantalla').forEach(p => p.classList.remove('activa'));
             document.getElementById(id).classList.add('activa');
         }
 
-        // ENTRAR / CREAR USUARIO
-        function entrarApp() {
+        function ejecutarIngreso() {
             const u = document.getElementById('user-acceso').value.trim().toLowerCase();
             const p = document.getElementById('pass-acceso').value;
 
-            if (!u || !p) {
-                alert("Por favor completa usuario y contraseña.");
-                return;
+            if (!u || !p) return;
+
+            // CREACIÓN AUTOMÁTICA SI NO EXISTE
+            if (!base_datos[u]) {
+                base_datos[u] = { clave: p, ingresos: [], gastos: [] };
+                localStorage.setItem('APP_HOGAR_V5', JSON.stringify(base_datos));
             }
 
-            // Lógica de creación automática
-            if (!usuarios[u]) {
-                usuarios[u] = { clave: p, ingresos: [], gastos: [] };
-                localStorage.setItem('DB_USERS_HOGAR', JSON.stringify(usuarios));
-            }
-
-            // Validar clave
-            if (usuarios[u].clave === p) {
-                miUsuario = u;
-                document.getElementById('label-user').innerText = "Bienvenido: " + u;
-                actualizarVistaPrincipal();
-                irA('pantalla-menu');
+            if (base_datos[u].clave === p) {
+                sesion_usuario = u;
+                document.getElementById('usr-actual').innerText = "Usuario: " + u;
+                actualizarSaldoTotal();
+                cambiarPantalla('pantalla-menu');
             } else {
-                alert("Contraseña incorrecta para el usuario: " + u);
+                alert("La contraseña no coincide.");
             }
         }
 
-        function actualizarVistaPrincipal() {
-            const d = usuarios[miUsuario];
-            const ti = d.ingresos.reduce((s, x) => s + (parseFloat(x.valor) || 0), 0);
-            const tg = d.gastos.reduce((s, x) => s + (parseFloat(x.valor) || 0), 0);
-            document.getElementById('saldo-total').innerText = `$ ${(ti - tg).toLocaleString()}`;
-            localStorage.setItem('DB_USERS_HOGAR', JSON.stringify(usuarios));
+        function actualizarSaldoTotal() {
+            const d = base_datos[sesion_usuario];
+            const t_in = d.ingresos.reduce((s, x) => s + (parseFloat(x.valor) || 0), 0);
+            const t_ga = d.gastos.reduce((s, x) => s + (parseFloat(x.valor) || 0), 0);
+            document.getElementById('saldo-total').innerText = `$ ${(t_in - t_ga).toLocaleString()}`;
+            localStorage.setItem('APP_HOGAR_V5', JSON.stringify(base_datos));
         }
 
-        function abrirGestion(tipo) {
-            miModo = tipo;
-            document.getElementById('titulo-gestion').innerText = tipo;
-            pintarTabla();
-            irA('pantalla-gestion');
+        function irGestion(m) {
+            modo_vista = m;
+            document.getElementById('tit-gestion').innerText = m;
+            refrescarTabla();
+            cambiarPantalla('pantalla-gestion');
         }
 
-        function pintarTabla() {
-            const lista = usuarios[miUsuario][miModo];
-            const cuerpo = document.getElementById('tabla-cuerpo');
-            let suma = 0; 
-            cuerpo.innerHTML = '';
-            
-            lista.forEach
+        function refrescarTabla() {
+            const items = base_datos[sesion_usuario][modo_vista];
+            const tabla = document.getElementById('lista-datos');
+            let total = 0;
+            tabla.innerHTML = '';
+            items.forEach((item, i) => {
+                total += parseFloat(item.valor);
+                tabla.innerHTML += `<tr class="border-b">
+                    <td class="p-4"><b>${item.detalle}</b></td>
+                    <td class="p-4 text-right"><b>$${parseFloat(item.valor).toLocaleString()}</b></td>
+                    <td class="p-4 text-center text-rose-500" onclick="quitarDato(${i})"><i class="
