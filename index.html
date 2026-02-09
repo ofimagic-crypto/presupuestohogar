@@ -10,119 +10,41 @@
         .contenedor-app { max-width: 500px; margin: 0 auto; min-height: 100vh; background: #f1f5f9; }
         .pantalla { display: none; }
         .pantalla.activa { display: block; }
-        input { border: 2px solid #cbd5e1 !important; border-radius: 12px; padding: 14px; width: 100%; outline: none; }
         
-        .caja-password { position: relative; width: 100%; }
-        .btn-ojo { 
-            position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
-            cursor: pointer; z-index: 100; padding: 10px; color: #64748b;
+        .input-estilo { 
+            border: 2px solid #cbd5e1 !important; 
+            border-radius: 12px; padding: 14px; width: 100%; 
+            outline: none; background: white; font-weight: bold; text-align: center;
         }
 
-        .boton-negro {
-            background-color: #1e293b; color: white; width: 100%; padding: 18px;
-            border-radius: 16px; font-weight: 900; text-transform: uppercase; cursor: pointer;
+        .caja-pass { position: relative; width: 100%; }
+        .ojo-click { 
+            position: absolute; right: 0; top: 0; height: 100%; width: 50px; 
+            display: flex; align-items: center; justify-content: center; 
+            cursor: pointer; z-index: 999; color: #64748b;
         }
-        .boton-negro:active { transform: scale(0.96); }
+
+        .btn-entrar {
+            background-color: #0f172a; color: white; width: 100%; padding: 20px;
+            border-radius: 16px; font-weight: 900; text-transform: uppercase;
+            cursor: pointer; border: none; margin-top: 10px;
+        }
+        .btn-entrar:active { transform: scale(0.95); }
     </style>
 </head>
 <body class="bg-slate-300">
+
     <div class="contenedor-app p-4 flex flex-col font-sans">
         
         <header class="text-center py-4 border-b-2 border-slate-200 mb-6">
-            <h1 class="text-2xl font-black text-slate-800 uppercase">Presupuesto Hogar</h1>
-            <p class="text-blue-600 font-bold text-sm italic">Ebooks Magic</p>
+            <h1 class="text-2xl font-black text-slate-800">PRESUPUESTO HOGAR</h1>
+            <p class="text-blue-600 font-bold text-sm">Ebooks Magic</p>
         </header>
 
-        <div id="pantalla-login" class="pantalla activa">
-            <div class="bg-white p-8 rounded-[2rem] shadow-2xl border space-y-4">
-                <input type="text" id="usr" placeholder="Usuario" class="text-center font-bold">
-                <div class="caja-password">
-                    <input type="password" id="psw" placeholder="Contraseña" class="text-center font-bold">
-                    <div class="btn-ojo" onclick="togglePassword()">
-                        <i id="ojo-icon" class="fa-solid fa-eye"></i>
-                    </div>
-                </div>
-                <button type="button" onclick="entrarApp()" class="boton-negro">Entrar</button>
-            </div>
-        </div>
+        <div id="p-login" class="pantalla activa">
+            <div class="bg-white p-8 rounded-[2rem] shadow-2xl border space-y-6">
+                <input type="text" id="usuario" placeholder="USUARIO" class="input-estilo uppercase">
 
-        <div id="pantalla-menu" class="pantalla space-y-4">
-            <div class="bg-slate-800 text-white p-6 rounded-[2.5rem] text-center border-b-4 border-blue-500">
-                <p id="label-user" class="text-blue-300 text-[10px] font-bold uppercase mb-2"></p>
-                <h2 id="saldo-total" class="text-4xl font-black">$ 0</h2>
-            </div>
-
-            <div class="grid grid-cols-1 gap-3">
-                <button onclick="abrirGestion('ingresos')" class="bg-emerald-500 text-white p-5 rounded-2xl font-bold flex justify-between shadow">
-                    <span>💰 Ingresos</span> <i class="fa-solid fa-chevron-right"></i>
-                </button>
-                <button onclick="abrirGestion('gastos')" class="bg-rose-500 text-white p-5 rounded-2xl font-bold flex justify-between shadow">
-                    <span>💸 Gastos</span> <i class="fa-solid fa-chevron-right"></i>
-                </button>
-                <button onclick="abrirListado()" class="bg-blue-600 text-white p-5 rounded-2xl font-bold flex justify-between shadow">
-                    <span>📊 Listado de Gastos</span> <i class="fa-solid fa-chevron-right"></i>
-                </button>
-                <button onclick="abrirProyeccion()" class="bg-indigo-700 text-white p-5 rounded-2xl font-bold flex justify-between shadow">
-                    <span>🚀 Proyectar Ajustes</span> <i class="fa-solid fa-chevron-right"></i>
-                </button>
-            </div>
-
-            <button onclick="location.reload()" class="w-full text-slate-400 font-bold py-10 text-xs">CERRAR SESIÓN</button>
-        </div>
-
-    </div>
-
-    <script>
-        let db = JSON.parse(localStorage.getItem('hogar_db_v7')) || {};
-        let usuarioActivo = "";
-
-        // ENTER para Entrar
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') {
-                if (document.getElementById('pantalla-login').classList.contains('activa')) entrarApp();
-            }
-        });
-
-        function togglePassword() {
-            const p = document.getElementById('psw');
-            const i = document.getElementById('ojo-icon');
-            if (p.type === "password") {
-                p.type = "text";
-                i.classList.replace('fa-eye', 'fa-eye-slash');
-            } else {
-                p.type = "password";
-                i.classList.replace('fa-eye-slash', 'fa-eye');
-            }
-        }
-
-        function navegar(id) {
-            document.querySelectorAll('.pantalla').forEach(p => p.classList.remove('activa'));
-            document.getElementById(id).classList.add('activa');
-        }
-
-        function entrarApp() {
-            const u = document.getElementById('usr').value.trim().toLowerCase();
-            const p = document.getElementById('psw').value;
-            if (!u || !p) return;
-
-            if (!db[u]) {
-                db[u] = { clave: p, ingresos: [], gastos: [] };
-                localStorage.setItem('hogar_db_v7', JSON.stringify(db));
-            }
-
-            if (db[u].clave === p) {
-                usuarioActivo = u;
-                document.getElementById('label-user').innerText = "Usuario: " + u;
-                navegar('pantalla-menu');
-            } else {
-                alert("Clave incorrecta");
-            }
-        }
-
-        // Funciones temporales para que los botones no den error
-        function abrirGestion(tipo) { alert('Abriendo ' + tipo); }
-        function abrirListado() { alert('Abriendo Listado'); }
-        function abrirProyeccion() { alert('Abriendo Proyección'); }
-    </script>
-</body>
-</html>
+                <div class="caja-pass">
+                    <input type="password" id="clave" placeholder="CONTRASEÑA" class="input-estilo">
+                    <div
