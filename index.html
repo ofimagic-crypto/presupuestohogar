@@ -7,7 +7,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        .contenedor-app { max-width: 500px; margin: 0 auto; min-height: 100vh; background: #f1f5f9; position: relative; }
+        .contenedor-app { max-width: 500px; margin: 0 auto; min-height: 100vh; background: #f1f5f9; }
         .pantalla { display: none; }
         .pantalla.activa { display: block; }
         
@@ -17,135 +17,73 @@
             padding: 14px; 
             width: 100%; 
             outline: none; 
-            font-size: 16px;
+            background: white;
         }
 
-        /* Contenedor del ojo */
-        .caja-password { position: relative; width: 100%; }
+        /* Contenedor del ojo corregido */
+        .caja-password { position: relative; width: 100%; display: flex; align-items: center; }
         .btn-ojo { 
             position: absolute; 
-            right: 0; 
-            top: 0; 
+            right: 10px; 
             height: 100%; 
-            width: 50px; 
+            width: 45px; 
             display: flex; 
             align-items: center; 
             justify-content: center; 
             cursor: pointer; 
-            z-index: 50; 
-            color: #64748b;
+            z-index: 100; /* Asegura que esté por encima de todo */
         }
 
-        /* Botón de alto impacto */
         .boton-entrar {
             background-color: #0f172a;
             color: white;
             width: 100%;
-            padding: 20px;
+            padding: 18px;
             border-radius: 16px;
             font-weight: 900;
             text-transform: uppercase;
             cursor: pointer;
             border: none;
-            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.3);
-            display: block;
+            margin-top: 20px;
         }
-        .boton-entrar:active { transform: scale(0.95); background-color: #000; }
+        .boton-entrar:active { transform: scale(0.95); }
     </style>
 </head>
 <body class="bg-slate-300">
 
     <div class="contenedor-app p-4 flex flex-col font-sans">
         
-        <header class="text-center py-6 border-b-2 border-slate-200 mb-6">
-            <h1 class="text-2xl font-black text-slate-800">PRESUPUESTO HOGAR</h1>
+        <header class="text-center py-4 border-b-2 border-slate-200 mb-6">
+            <h1 class="text-2xl font-black text-slate-800 uppercase">Presupuesto Hogar</h1>
             <p class="text-blue-600 font-bold text-sm">Ebooks Magic</p>
         </header>
 
         <div id="pantalla-login" class="pantalla activa">
-            <div class="bg-white p-8 rounded-[2rem] shadow-2xl border space-y-6">
+            <div class="bg-white p-8 rounded-[2rem] shadow-2xl border space-y-4">
+                
                 <div>
-                    <label class="text-[10px] font-bold text-slate-400 uppercase ml-2">Usuario</label>
-                    <input type="text" id="usr" placeholder="Escribe tu nombre" class="text-center font-bold">
+                    <input type="text" id="usr" placeholder="Usuario" class="text-center font-bold">
                 </div>
 
-                <div>
-                    <label class="text-[10px] font-bold text-slate-400 uppercase ml-2">Contraseña</label>
-                    <div class="caja-password">
-                        <input type="password" id="psw" placeholder="Escribe tu clave" class="text-center font-bold">
-                        <div class="btn-ojo" onclick="revelarClave()">
-                            <i id="icono-ojo" class="fa-solid fa-eye"></i>
-                        </div>
+                <div class="caja-password">
+                    <input type="password" id="psw" placeholder="Contraseña" class="text-center font-bold">
+                    <div class="btn-ojo" onclick="revelar()">
+                        <i id="ojo-icon" class="fa-solid fa-eye text-slate-400"></i>
                     </div>
                 </div>
 
                 <button type="button" onclick="entrar()" class="boton-entrar">
-                    ENTRAR AHORA
+                    Entrar
                 </button>
             </div>
         </div>
 
         <div id="pantalla-menu" class="pantalla space-y-4">
-            <div class="bg-slate-800 text-white p-8 rounded-[2rem] text-center">
-                <p id="usr-txt" class="text-blue-300 text-xs font-bold mb-2 uppercase"></p>
-                <h2 id="saldo" class="text-4xl font-black">$ 0</h2>
+            <div class="bg-slate-800 text-white p-6 rounded-[2rem] text-center border-b-4 border-blue-500">
+                <p id="usr-display" class="text-blue-300 text-[10px] font-bold uppercase mb-2"></p>
+                <h2 id="saldo-total" class="text-4xl font-black">$ 0</h2>
             </div>
             <div class="grid gap-3">
-                <button onclick="alert('Funcionalidad en desarrollo')" class="bg-emerald-500 text-white p-5 rounded-xl font-bold">💰 INGRESOS</button>
-                <button onclick="alert('Funcionalidad en desarrollo')" class="bg-rose-500 text-white p-5 rounded-xl font-bold">💸 GASTOS</button>
-                <button onclick="location.reload()" class="bg-slate-400 text-white p-3 rounded-xl font-bold text-sm">CERRAR SESIÓN</button>
-            </div>
-        </div>
-
-    </div>
-
-    <script>
-        // Tecla Enter vinculada al botón
-        document.addEventListener('keypress', function (e) {
-            if (e.key === 'Enter') {
-                entrar();
-            }
-        });
-
-        // Revelar contraseña
-        function revelarClave() {
-            const campo = document.getElementById('psw');
-            const icono = document.getElementById('icono-ojo');
-            if (campo.type === "password") {
-                campo.type = "text";
-                icono.classList.replace('fa-eye', 'fa-eye-slash');
-            } else {
-                campo.type = "password";
-                icono.classList.replace('fa-eye-slash', 'fa-eye');
-            }
-        }
-
-        // Entrar o Registrar
-        function entrar() {
-            const u = document.getElementById('usr').value.trim();
-            const p = document.getElementById('psw').value;
-
-            if (!u || !p) {
-                alert("Completa los campos");
-                return;
-            }
-
-            // Simulación de base de datos en memoria para prueba rápida
-            let bd = JSON.parse(localStorage.getItem('hogar_db')) || {};
-
-            if (!bd[u]) {
-                bd[u] = { clave: p };
-                localStorage.setItem('hogar_db', JSON.stringify(bd));
-            }
-
-            if (bd[u].clave === p) {
-                document.getElementById('usr-txt').innerText = "Hola, " + u;
-                document.getElementById('pantalla-login').classList.remove('activa');
-                document.getElementById('pantalla-menu').classList.add('activa');
-            } else {
-                alert("Clave incorrecta");
-            }
-        }
-    </script>
-</body>
-</html>
+                <button onclick="alert('Ingresos')" class="bg-emerald-500 text-white p-5 rounded-xl font-bold uppercase shadow">💰 Ingresos</button>
+                <button onclick="alert('Gastos')" class="bg-rose-500 text-white p-5 rounded-xl font-bold uppercase shadow">💸 Gastos</button>
+                <button onclick="location.reload()" class
