@@ -7,106 +7,145 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        .contenedor-app { max-width: 500px; margin: 0 auto; min-height: 100vh; background: #f1f5f9; }
+        .contenedor-app { max-width: 500px; margin: 0 auto; min-height: 100vh; background: #f1f5f9; position: relative; }
         .pantalla { display: none; }
         .pantalla.activa { display: block; }
         
-        /* Inputs con borde fuerte para que se vean bien */
-        input { border: 2px solid #cbd5e1 !important; border-radius: 14px; padding: 14px; width: 100%; outline: none; }
-        input:focus { border-color: #3b82f6 !important; }
-
-        /* Contenedor del ojo para que esté ADENTRO */
-        .wrapper-pass { position: relative; width: 100%; }
-        .btn-ojo { 
-            position: absolute; 
-            right: 15px; 
-            top: 50%; 
-            transform: translateY(-50%); 
-            z-index: 20; 
-            padding: 10px;
-            color: #64748b;
-            cursor: pointer;
+        input { 
+            border: 2px solid #cbd5e1 !important; 
+            border-radius: 12px; 
+            padding: 14px; 
+            width: 100%; 
+            outline: none; 
+            font-size: 16px;
         }
 
-        /* Botón que sí se siente al presionar */
-        .btn-accion {
-            background-color: #1e293b;
+        /* Contenedor del ojo */
+        .caja-password { position: relative; width: 100%; }
+        .btn-ojo { 
+            position: absolute; 
+            right: 0; 
+            top: 0; 
+            height: 100%; 
+            width: 50px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            cursor: pointer; 
+            z-index: 50; 
+            color: #64748b;
+        }
+
+        /* Botón de alto impacto */
+        .boton-entrar {
+            background-color: #0f172a;
             color: white;
             width: 100%;
-            padding: 18px;
+            padding: 20px;
             border-radius: 16px;
             font-weight: 900;
             text-transform: uppercase;
-            transition: 0.1s;
-            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.2);
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.3);
+            display: block;
         }
-        .btn-accion:active { transform: scale(0.96); background-color: #000; }
+        .boton-entrar:active { transform: scale(0.95); background-color: #000; }
     </style>
 </head>
 <body class="bg-slate-300">
-    <div class="contenedor-app p-4 shadow-2xl flex flex-col font-sans">
+
+    <div class="contenedor-app p-4 flex flex-col font-sans">
         
-        <header class="text-center py-4 border-b-2 border-slate-200 mb-6">
+        <header class="text-center py-6 border-b-2 border-slate-200 mb-6">
             <h1 class="text-2xl font-black text-slate-800">PRESUPUESTO HOGAR</h1>
-            <p class="text-blue-600 font-bold text-sm italic">Ebooks Magic</p>
+            <p class="text-blue-600 font-bold text-sm">Ebooks Magic</p>
         </header>
 
-        <div id="pantalla-login" class="pantalla activa space-y-6">
-            <div class="bg-white p-8 rounded-[2.5rem] shadow-xl border text-center">
-                <div class="space-y-4">
-                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Identificación</p>
-                    
-                    <input type="text" id="user-id" placeholder="Usuario" class="text-center font-bold uppercase">
-                    
-                    <div class="wrapper-pass">
-                        <input type="password" id="user-pass" placeholder="Contraseña" class="text-center font-bold">
-                        <div class="btn-ojo" onclick="gestionarOjo()">
-                            <i id="ojo-icon" class="fa-solid fa-eye"></i>
+        <div id="pantalla-login" class="pantalla activa">
+            <div class="bg-white p-8 rounded-[2rem] shadow-2xl border space-y-6">
+                <div>
+                    <label class="text-[10px] font-bold text-slate-400 uppercase ml-2">Usuario</label>
+                    <input type="text" id="usr" placeholder="Escribe tu nombre" class="text-center font-bold">
+                </div>
+
+                <div>
+                    <label class="text-[10px] font-bold text-slate-400 uppercase ml-2">Contraseña</label>
+                    <div class="caja-password">
+                        <input type="password" id="psw" placeholder="Escribe tu clave" class="text-center font-bold">
+                        <div class="btn-ojo" onclick="revelarClave()">
+                            <i id="icono-ojo" class="fa-solid fa-eye"></i>
                         </div>
                     </div>
-
-                    <button type="button" onclick="entrarAlSistema()" class="btn-accion">
-                        Entrar / Registrarse
-                    </button>
-                    
-                    <p class="text-[9px] text-slate-400 font-medium">Si el usuario no existe, se creará ahora mismo.</p>
                 </div>
+
+                <button type="button" onclick="entrar()" class="boton-entrar">
+                    ENTRAR AHORA
+                </button>
             </div>
         </div>
 
         <div id="pantalla-menu" class="pantalla space-y-4">
-            <div class="bg-slate-800 text-white p-6 rounded-[2.5rem] text-center border-b-4 border-blue-500">
-                <p id="usr-tag" class="text-[10px] text-blue-300 font-bold uppercase mb-2"></p>
-                <h2 id="saldo-main" class="text-4xl font-black">$ 0</h2>
+            <div class="bg-slate-800 text-white p-8 rounded-[2rem] text-center">
+                <p id="usr-txt" class="text-blue-300 text-xs font-bold mb-2 uppercase"></p>
+                <h2 id="saldo" class="text-4xl font-black">$ 0</h2>
             </div>
-            <div class="grid grid-cols-1 gap-3">
-                <button onclick="irABloque('ingresos')" class="bg-emerald-500 text-white p-5 rounded-2xl font-bold flex justify-between shadow"><span>💰 Ingresos</span> <i class="fa-solid fa-chevron-right"></i></button>
-                <button onclick="irABloque('gastos')" class="bg-rose-500 text-white p-5 rounded-2xl font-bold flex justify-between shadow"><span>💸 Gastos</span> <i class="fa-solid fa-chevron-right"></i></button>
-                <button onclick="irAResumen()" class="bg-blue-600 text-white p-5 rounded-2xl font-bold flex justify-between shadow"><span>📊 Resumen General</span> <i class="fa-solid fa-chevron-right"></i></button>
+            <div class="grid gap-3">
+                <button onclick="alert('Funcionalidad en desarrollo')" class="bg-emerald-500 text-white p-5 rounded-xl font-bold">💰 INGRESOS</button>
+                <button onclick="alert('Funcionalidad en desarrollo')" class="bg-rose-500 text-white p-5 rounded-xl font-bold">💸 GASTOS</button>
+                <button onclick="location.reload()" class="bg-slate-400 text-white p-3 rounded-xl font-bold text-sm">CERRAR SESIÓN</button>
             </div>
-            <button onclick="location.reload()" class="w-full text-slate-400 text-xs font-bold py-10">CERRAR SESIÓN</button>
         </div>
 
-        <div id="pantalla-gestion" class="pantalla space-y-4">
-            <div class="bg-white p-4 rounded-2xl flex justify-between items-center shadow-sm border">
-                <h2 id="tit-seccion" class="font-black uppercase"></h2>
-                <span id="suma-seccion" class="font-black text-blue-600"></span>
-            </div>
-            
-            <div class="bg-white rounded-2xl shadow border max-h-64 overflow-y-auto">
-                <table class="w-full text-sm">
-                    <tbody id="lista-items"></tbody>
-                </table>
-            </div>
+    </div>
 
-            <div class="bg-slate-800 p-5 rounded-3xl space-y-3 shadow-2xl">
-                <div class="grid grid-cols-2 gap-2">
-                    <input type="text" id="add-det" placeholder="Concepto" class="text-sm">
-                    <input type="date" id="add-fec" class="text-sm">
-                </div>
-                <div class="flex gap-2">
-                    <input type="number" id="add-val" placeholder="Valor $" class="flex-1 font-bold">
-                    <button onclick="crearRegistro()" class="bg-emerald-500 text-white px-8 rounded-xl font-black text-xl">OK</button>
-                </div>
-            </div>
-            <button onclick="navegar('pantalla-menu')" class="
+    <script>
+        // Tecla Enter vinculada al botón
+        document.addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                entrar();
+            }
+        });
+
+        // Revelar contraseña
+        function revelarClave() {
+            const campo = document.getElementById('psw');
+            const icono = document.getElementById('icono-ojo');
+            if (campo.type === "password") {
+                campo.type = "text";
+                icono.classList.replace('fa-eye', 'fa-eye-slash');
+            } else {
+                campo.type = "password";
+                icono.classList.replace('fa-eye-slash', 'fa-eye');
+            }
+        }
+
+        // Entrar o Registrar
+        function entrar() {
+            const u = document.getElementById('usr').value.trim();
+            const p = document.getElementById('psw').value;
+
+            if (!u || !p) {
+                alert("Completa los campos");
+                return;
+            }
+
+            // Simulación de base de datos en memoria para prueba rápida
+            let bd = JSON.parse(localStorage.getItem('hogar_db')) || {};
+
+            if (!bd[u]) {
+                bd[u] = { clave: p };
+                localStorage.setItem('hogar_db', JSON.stringify(bd));
+            }
+
+            if (bd[u].clave === p) {
+                document.getElementById('usr-txt').innerText = "Hola, " + u;
+                document.getElementById('pantalla-login').classList.remove('activa');
+                document.getElementById('pantalla-menu').classList.add('activa');
+            } else {
+                alert("Clave incorrecta");
+            }
+        }
+    </script>
+</body>
+</html>
