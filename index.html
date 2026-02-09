@@ -10,94 +10,107 @@
         .contenedor-app { max-width: 500px; margin: 0 auto; min-height: 100vh; background: #f1f5f9; }
         .pantalla { display: none; }
         .pantalla.activa { display: block; }
-        input { border: 2px solid #cbd5e1 !important; border-radius: 12px; padding: 14px; width: 100%; outline: none; background: white; font-weight: bold; text-align: center; }
         
-        /* Ojo y Botones de Entrada */
-        .caja-pass { position: relative; width: 100%; }
-        .btn-ojo { position: absolute; right: 0; top: 0; height: 100%; width: 50px; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 100; color: #64748b; }
-        .btn-negro { background-color: #1e293b; color: white; width: 100%; padding: 18px; border-radius: 16px; font-weight: 900; text-transform: uppercase; cursor: pointer; margin-top: 10px; }
-        
-        /* Menú de Botones */
-        .btn-menu { width: 100%; padding: 20px; border-radius: 20px; font-weight: bold; display: flex; justify-content: space-between; align-items: center; color: white; transition: 0.1s; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
-        .btn-menu:active { transform: scale(0.96); }
+        /* Inputs Estilo Captura */
+        input { 
+            border: 2px solid #cbd5e1 !important; 
+            border-radius: 12px; padding: 16px; width: 100%; 
+            outline: none; background: white; font-weight: 900; 
+            text-align: center; font-size: 1.2rem;
+        }
+
+        /* OJO INTEGRADO Y FUNCIONAL */
+        .caja-pass { position: relative; width: 100%; display: flex; align-items: center; }
+        .btn-ojo { 
+            position: absolute; right: 15px; cursor: pointer; 
+            z-index: 100; color: #64748b; font-size: 1.2rem;
+            padding: 10px;
+        }
+
+        /* BOTONES MENÚ */
+        .btn-negro { background-color: #1e293b; color: white; width: 100%; padding: 20px; border-radius: 16px; font-weight: 900; text-transform: uppercase; cursor: pointer; margin-top: 10px; }
+        .btn-menu { width: 100%; padding: 22px; border-radius: 20px; font-weight: 900; display: flex; justify-content: space-between; align-items: center; color: white; margin-bottom: 8px; font-size: 1rem; }
+        .btn-menu:active { transform: scale(0.97); }
     </style>
 </head>
 <body class="bg-slate-300">
 
-    <div class="contenedor-app p-4 flex flex-col font-sans">
+    <div class="contenedor-app p-6 flex flex-col font-sans">
         
-        <header class="text-center py-4 border-b-2 border-slate-200 mb-6">
-            <h1 class="text-2xl font-black text-slate-800">PRESUPUESTO HOGAR</h1>
-            <p class="text-blue-600 font-bold text-sm italic uppercase tracking-wider">Ebooks Magic</p>
+        <header class="text-center py-4 border-b-2 border-slate-200 mb-8">
+            <h1 class="text-3xl font-black text-slate-800">PRESUPUESTO HOGAR</h1>
+            <p class="text-blue-600 font-bold text-sm tracking-widest">Ebooks Magic</p>
         </header>
 
         <div id="p-login" class="pantalla activa">
-            <div class="bg-white p-8 rounded-[2rem] shadow-2xl border space-y-4">
+            <div class="bg-white p-10 rounded-[2.5rem] shadow-2xl border space-y-6">
                 <input type="text" id="usuario" placeholder="USUARIO" class="uppercase">
                 <div class="caja-pass">
                     <input type="password" id="clave" placeholder="CONTRASEÑA">
-                    <div class="btn-ojo" onclick="verClave()">
-                        <i id="ojo-img" class="fa-solid fa-eye"></i>
+                    <div class="btn-ojo" onclick="toggleVisibilidad()">
+                        <i id="ojo-icon" class="fa-solid fa-eye"></i>
                     </div>
                 </div>
-                <button type="button" id="btn-submit" onclick="entrar()" class="btn-negro">Entrar</button>
+                <button type="button" onclick="intentarEntrar()" class="btn-negro">Entrar Ahora</button>
             </div>
         </div>
 
         <div id="p-menu" class="pantalla space-y-4">
-            <div class="bg-slate-800 text-white p-8 rounded-[2.5rem] text-center border-b-4 border-blue-500 shadow-xl">
-                <p id="usr-tag" class="text-blue-300 text-[10px] font-bold uppercase mb-2"></p>
-                <h2 id="saldo-txt" class="text-4xl font-black">$ 0</h2>
+            <div class="bg-slate-800 text-white p-10 rounded-[3rem] text-center border-b-8 border-blue-500 shadow-2xl mb-6">
+                <p id="usr-saludo" class="text-blue-300 text-xs font-black uppercase mb-2 tracking-tighter"></p>
+                <h2 id="saldo-display" class="text-5xl font-black">$ 0</h2>
             </div>
 
-            <div class="grid gap-3">
-                <button onclick="irSeccion('ingresos')" class="btn-menu bg-emerald-500"><span>💰 INGRESOS</span> <i class="fa-solid fa-plus-circle"></i></button>
-                <button onclick="irSeccion('egresos')" class="btn-menu bg-rose-500"><span>💸 EGRESOS</span> <i class="fa-solid fa-minus-circle"></i></button>
-                <button onclick="preguntarListado()" class="btn-menu bg-blue-600"><span>📊 LISTADO</span> <i class="fa-solid fa-list-ul"></i></button>
-                <button onclick="irSeccion('clasificar')" class="btn-menu bg-amber-500"><span>🔍 CLASIFICAR</span> <i class="fa-solid fa-tags"></i></button>
-                <button onclick="irSeccion('proyectar')" class="btn-menu bg-indigo-700"><span>🚀 PROYECTAR AJUSTES</span> <i class="fa-solid fa-chart-line"></i></button>
+            <div class="flex flex-col">
+                <button onclick="seccion('ingresos')" class="btn-menu bg-emerald-500 shadow-md"><span>💰 INGRESOS</span> <i class="fa-solid fa-chevron-right"></i></button>
+                <button onclick="seccion('egresos')" class="btn-menu bg-rose-500 shadow-md"><span>💸 EGRESOS</span> <i class="fa-solid fa-chevron-right"></i></button>
+                <button onclick="preguntarListado()" class="btn-menu bg-blue-600 shadow-md"><span>📊 LISTADO</span> <i class="fa-solid fa-list-ul"></i></button>
+                <button onclick="seccion('clasificar')" class="btn-menu bg-amber-500 shadow-md"><span>🔍 CLASIFICAR</span> <i class="fa-solid fa-tags"></i></button>
+                <button onclick="seccion('proyectar')" class="btn-menu bg-indigo-700 shadow-md"><span>🚀 PROYECTAR AJUSTES</span> <i class="fa-solid fa-chart-line"></i></button>
             </div>
 
-            <button onclick="location.reload()" class="w-full text-slate-400 font-bold py-6 text-xs uppercase">Cerrar Sesión</button>
+            <button onclick="location.reload()" class="w-full text-slate-400 font-black py-8 text-xs uppercase tracking-widest">Cerrar Sesión</button>
         </div>
 
-        <div id="p-preg-listado" class="pantalla">
-            <div class="bg-white p-8 rounded-[2rem] shadow-2xl border text-center space-y-4">
-                <p class="font-bold text-slate-700 uppercase text-sm">¿Qué listado desea generar?</p>
-                <button onclick="irSeccion('listado-in')" class="w-full bg-emerald-500 text-white p-4 rounded-xl font-bold">LISTADO DE INGRESOS</button>
-                <button onclick="irSeccion('listado-out')" class="w-full bg-rose-500 text-white p-4 rounded-xl font-bold">LISTADO DE EGRESOS</button>
-                <button onclick="navegar('p-menu')" class="w-full text-slate-400 font-bold pt-4 text-xs">VOLVER AL MENÚ</button>
+        <div id="p-pregunta" class="pantalla">
+            <div class="bg-white p-10 rounded-[2.5rem] shadow-2xl border text-center space-y-4">
+                <p class="font-black text-slate-700 uppercase">¿Qué listado desea generar?</p>
+                <button onclick="seccion('list-in')" class="w-full bg-emerald-500 text-white p-5 rounded-2xl font-black">INGRESOS</button>
+                <button onclick="seccion('list-out')" class="w-full bg-rose-500 text-white p-5 rounded-2xl font-black">EGRESOS</button>
+                <button onclick="navegar('p-menu')" class="w-full text-slate-400 font-bold pt-4">VOLVER</button>
             </div>
         </div>
 
     </div>
 
     <script>
-        // DB y Memoria
-        let base = JSON.parse(localStorage.getItem('hogar_v10')) || {};
-        let lastUsr = localStorage.getItem('last_user') || "";
+        const STORAGE_KEY = 'HOGAR_APP_FINAL';
+        let db = JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
+        let logueado = localStorage.getItem('last_session') || "";
 
-        // Auto-relleno al inicio
+        // Al cargar: Auto-relleno
         window.onload = () => {
-            if (lastUsr && base[lastUsr]) {
-                document.getElementById('usuario').value = lastUsr;
-                document.getElementById('clave').value = base[lastUsr].pass;
+            if (logueado && db[logueado]) {
+                document.getElementById('usuario').value = logueado;
+                document.getElementById('clave').value = db[logueado].pass;
             }
         };
 
-        // Escucha de tecla ENTER para el Login
+        // Tecla ENTER
         document.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter' && document.getElementById('p-login').classList.contains('activa')) {
-                entrar();
-            }
+            if (e.key === 'Enter' && document.getElementById('p-login').classList.contains('activa')) intentarEntrar();
         });
 
-        function verClave() {
+        function toggleVisibilidad() {
             const input = document.getElementById('clave');
-            const icon = document.getElementById('ojo-img');
-            input.type = (input.type === "password") ? "text" : "password";
-            icon.classList.toggle('fa-eye');
-            icon.classList.toggle('fa-eye-slash');
+            const icon = document.getElementById('ojo-icon');
+            if (input.type === "password") {
+                input.type = "text";
+                icon.className = "fa-solid fa-eye-slash";
+            } else {
+                input.type = "password";
+                icon.className = "fa-solid fa-eye";
+            }
         }
 
         function navegar(id) {
@@ -105,32 +118,31 @@
             document.getElementById(id).classList.add('activa');
         }
 
-        function entrar() {
+        function intentarEntrar() {
             const u = document.getElementById('usuario').value.trim().toLowerCase();
             const p = document.getElementById('clave').value;
             if (!u || !p) return;
 
-            if (!base[u]) {
-                base[u] = { pass: p, in: [], out: [] };
-                localStorage.setItem('hogar_v10', JSON.stringify(base));
+            if (!db[u]) {
+                db[u] = { pass: p, in: [], out: [] };
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(db));
             }
 
-            if (base[u].pass === p) {
-                localStorage.setItem('last_user', u);
-                document.getElementById('usr-tag').innerText = "BIENVENIDO: " + u;
+            if (db[u].pass === p) {
+                localStorage.setItem('last_session', u);
+                document.getElementById('usr-saludo').innerText = "HOLA, " + u;
                 navegar('p-menu');
             } else {
-                alert("Clave incorrecta");
+                alert("Contraseña Incorrecta");
             }
         }
 
-        function preguntarListado() { navegar('p-preg-listado'); }
-
-        // Router para las secciones (se afectará solo según pidas)
-        function irSeccion(seccion) {
-            console.log("Entrando a: " + seccion);
-            // Las siguientes fases del proyecto se inyectarán aquí
-            if(seccion !== 'p-menu') alert('Has seleccionado: ' + seccion);
+        function preguntarListado() { navegar('p-pregunta'); }
+        
+        function seccion(s) { 
+            console.log("Navegando a: " + s); 
+            // Esto se mantiene estático hasta que pidas programar la funcionalidad interna
+            if(s !== 'p-menu') alert('Entrando a: ' + s);
         }
     </script>
 </body>
